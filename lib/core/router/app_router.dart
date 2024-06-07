@@ -53,4 +53,15 @@ abstract class AppRouter {
       duration: Duration(milliseconds: milliseconds ?? 1500),
     );
   }
+
+  static void pushReplacementAll(
+      {required String view,
+      get_transitions.Transition? transition,
+      int? milliseconds}) {
+    Get.offAll(
+      _views[view],
+      transition: transition ?? get_transitions.Transition.fade,
+      duration: Duration(milliseconds: milliseconds ?? 1500),
+    );
+  }
 }

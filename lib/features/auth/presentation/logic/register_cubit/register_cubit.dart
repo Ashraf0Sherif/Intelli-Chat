@@ -15,18 +15,23 @@ class RegisterCubit extends Cubit<RegisterState> {
   Future<void> signupUsingEmailAndPassword(
       {required String email, required String password}) async {
     emit(RegisterLoading());
-    var response = await authRepoImplementation.signupUsingEmailAndPassword(
-        email: email, password: password);
-    response.when(
-      success: (credential) {
-        emit(RegisterSuccess(credential: credential));
-      },
-      failure: (FirebaseExceptions firebaseExceptions) {
-        emit(
-          RegisterFailure(
-            errorMessage:
-                FirebaseExceptions.getErrorMessage(firebaseExceptions),
-          ),
+    await Future.delayed(
+      const Duration(milliseconds: 1500),
+      () async {
+        var response = await authRepoImplementation.signupUsingEmailAndPassword(
+            email: email, password: password);
+        response.when(
+          success: (credential) {
+            emit(RegisterSuccess(credential: credential));
+          },
+          failure: (FirebaseExceptions firebaseExceptions) {
+            emit(
+              RegisterFailure(
+                errorMessage:
+                    FirebaseExceptions.getErrorMessage(firebaseExceptions),
+              ),
+            );
+          },
         );
       },
     );

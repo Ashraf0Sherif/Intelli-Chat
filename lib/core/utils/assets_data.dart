@@ -3,4 +3,5 @@ class AssetsData {
   static const kLogoPic = "assets/images/logo_pic.png";
   static const kRiveRobot = "assets/rive/sendwave.riv";
   static const kRiveChatting = "assets/rive/new_file.riv";
+  static const kRiveLoading = "assets/rive/loading.riv";
 }

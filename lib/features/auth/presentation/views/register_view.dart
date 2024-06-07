@@ -1,137 +1,32 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart' as painting;
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
-import 'package:intellichat/core/utils/styles.dart';
-import 'package:intellichat/features/auth/presentation/views/widgets/custom_password_text_form_field.dart';
-import 'package:intellichat/features/auth/presentation/views/widgets/custom_text_form_field.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intellichat/core/utils/widgets/show_loading_dialog.dart';
+import 'package:intellichat/core/utils/widgets/show_snack_bar.dart';
+import 'package:intellichat/features/auth/presentation/logic/register_cubit/register_cubit.dart';
+import 'package:intellichat/features/auth/presentation/views/widgets/register_view_body.dart';
 
-import '../../../../constants.dart';
-import '../../../../core/utils/widgets/login_method.dart';
-import '../../../../core/utils/widgets/my_behavior.dart';
-
-class RegisterView extends StatefulWidget {
+class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
-}
-
-class _RegisterViewState extends State<RegisterView> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: painting.LinearGradient(
-              colors: [kPrimaryColor, kSecondaryColor],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: ScrollConfiguration(
-              behavior: MyBehavior(),
-              child: ListView(
-                children: [
-                  SizedBox(
-                    width: 200,
-                    height: 200,
-                    child: SvgPicture.asset(
-                      'assets/images/Fingerprint-cuate 1.svg',
-                    ),
-                  ),
-                  const Text(
-                    "Create an account.",
-                    style: Styles.kTextStyle28,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Sign for a free account. Get easier than search engines results.",
-                    style: Styles.kTextStyle16.copyWith(color: Colors.grey),
-                  ),
-                  const SizedBox(
-                    height: 26,
-                  ),
-                  CustomTextFormField(
-                      label: 'Email',
-                      hintText: "Enter Your Email",
-                      onChanged: (te) {},
-                      controller: _emailController),
-                  const SizedBox(
-                    height: 26,
-                  ),
-                  CustomPasswordTextFormField(
-                    label: 'Password',
-                    passwordController: _passwordController,
-                  ),
-                  const SizedBox(
-                    height: 26,
-                  ),
-                  CustomPasswordTextFormField(
-                    label: 'Confirm Password',
-                    passwordController: _confirmPasswordController,
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Center(
-                    child: LoginMethod(text: 'Create account'),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Divider(
-                    thickness: 1,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text("Already have an account? "),
-                      InkWell(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(color: kSecondaryColor2),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+    return BlocListener<RegisterCubit, RegisterState>(
+      listener: (context, state) {
+        if (state is RegisterFailure) {
+          showSnackBar(context, message: state.errorMessage);
+          Navigator.of(context).pop();
+        } else if (state is RegisterLoading) {
+          showLoadingDialog(context);
+        } else if (state is RegisterSuccess) {
+          showSnackBar(context,
+              message: "Verification email has been sent to your email");
+          FirebaseAuth.instance.currentUser!.sendEmailVerification();
+          Navigator.of(context).pop();
+          Navigator.pop(context);
+        }
+      },
+      child: const RegisterViewBody(),
     );
   }
 }
