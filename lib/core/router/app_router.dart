@@ -1,39 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart'
+    as get_transitions;
+import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
+import 'package:intellichat/features/auth/presentation/logic/register_cubit/register_cubit.dart';
+import 'package:intellichat/features/auth/repos/auth_repo_implementation.dart';
 import 'package:intellichat/features/onboarding/presentation/views/onboarding.dart';
 
 import '../../features/auth/presentation/views/login_view.dart';
 import '../../features/auth/presentation/views/register_view.dart';
 import '../../features/home/presentation/views/home_view.dart';
+import '../di/dependency_injection.dart';
 
 abstract class AppRouter {
   static const kHomeView = "/homeView";
   static const kLoginView = "/LoginView";
   static const kRegisterView = "/registerView";
   static const kOnboarding = "/onboarding";
+
   static final Map<String, Widget> _views = {
     kHomeView: const HomeView(),
-    kLoginView: const LoginView(),
-    kRegisterView: const RegisterView(),
+    kLoginView: BlocProvider(
+      create: (context) => LoginCubit(getIt.get<AuthRepoImplementation>()),
+      child: const LoginView(),
+    ),
+    kRegisterView: BlocProvider(
+      create: (context) => RegisterCubit(getIt.get<AuthRepoImplementation>()),
+      child: const RegisterView(),
+    ),
     kOnboarding: const OnBoarding(),
   };
 
   static void pushNavigation(
-      {required String view, Transition? transition, int? milliseconds}) {
+      {required String view,
+      get_transitions.Transition? transition,
+      int? milliseconds}) {
     Get.to(
       _views[view],
-      transition: transition ?? Transition.fade,
+      transition: transition ?? get_transitions.Transition.fade,
       duration: Duration(milliseconds: milliseconds ?? 1500),
     );
   }
 
   static void pushReplacementNavigation(
-      {required String view, Transition? transition, int? milliseconds}) {
+      {required String view,
+      get_transitions.Transition? transition,
+      int? milliseconds}) {
     Get.off(
       _views[view],
-      transition: transition ?? Transition.fade,
+      transition: transition ?? get_transitions.Transition.fade,
       duration: Duration(milliseconds: milliseconds ?? 1500),
     );
   }

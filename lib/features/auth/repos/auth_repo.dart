@@ -7,4 +7,6 @@ abstract class AuthRepo {
 
   Future<FirebaseResult<UserCredential>> signupUsingEmailAndPassword(
       {required String email, required String password});
+
+  Future<void> resetPassword({required String email});
 }

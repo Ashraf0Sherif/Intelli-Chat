@@ -18,7 +18,7 @@ class CustomFirebase {
     return credential;
   }
 
-  Future<void> forgotPassword({required String email}) async {
+  Future<void> resetPassword({required String email}) async {
     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 }

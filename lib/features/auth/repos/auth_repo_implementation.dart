@@ -35,4 +35,15 @@ class AuthRepoImplementation implements AuthRepo {
           FirebaseExceptions.getFirebaseException(error));
     }
   }
+
+  @override
+  Future<FirebaseResult<dynamic>> resetPassword({required String email}) async {
+    try {
+      await customFirebase.resetPassword(email: email);
+      return const FirebaseResult.success(null);
+    } catch (error) {
+      return FirebaseResult.failure(
+          FirebaseExceptions.getFirebaseException(error));
+    }
+  }
 }
