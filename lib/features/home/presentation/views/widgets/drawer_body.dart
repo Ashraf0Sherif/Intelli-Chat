@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intellichat/core/utils/styles.dart';
 
 import '../../../../../constants.dart';
 import 'drawer_list_view.dart';
@@ -12,6 +14,17 @@ class DrawerBody extends StatefulWidget {
 }
 
 class _DrawerBodyState extends State<DrawerBody> {
+  String userName = "guest";
+
+  @override
+  void initState() {
+    if (FirebaseAuth.instance.currentUser != null) {
+      userName = FirebaseAuth.instance.currentUser!.email!;
+      userName = userName.split('@').first;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -35,16 +48,22 @@ class _DrawerBodyState extends State<DrawerBody> {
                   const SizedBox(
                     width: 10,
                   ),
-                  const Text("Ashraf Sherif"),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      FontAwesomeIcons.rightFromBracket,
-                      color: Colors.red,
-                      size: 18,
+                  Expanded(
+                    child: Text(
+                      userName,
+                      overflow: TextOverflow.ellipsis,
+                      style: Styles.kTextStyle12,
                     ),
-                  )
+                  ),
+                  if (FirebaseAuth.instance.currentUser != null)
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        FontAwesomeIcons.rightFromBracket,
+                        color: Colors.red,
+                        size: 18,
+                      ),
+                    )
                 ],
               ),
               const SizedBox(

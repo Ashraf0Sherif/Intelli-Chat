@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
@@ -31,7 +32,7 @@ class HomeView extends StatelessWidget {
           elevation: 0,
           title: const Text("Intelli-Chat"),
           actions: [
-            Center(
+            if(FirebaseAuth.instance.currentUser == null)Center(
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(

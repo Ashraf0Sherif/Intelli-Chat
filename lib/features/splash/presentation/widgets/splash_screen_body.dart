@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
@@ -17,7 +18,9 @@ class _SplashViewBodyState extends State<SplashViewBody> {
       // TODO: Handle logged in or not
       const Duration(seconds: 1),
       () => AppRouter.pushReplacementNavigation(
-          view: AppRouter.kOnboarding,
+          view: FirebaseAuth.instance.currentUser == null
+              ? AppRouter.kOnboarding
+              : AppRouter.kHomeView,
           milliseconds: 1200,
           transition: Transition.fadeIn),
     );

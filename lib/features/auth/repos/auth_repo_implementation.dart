@@ -14,10 +14,22 @@ class AuthRepoImplementation implements AuthRepo {
   Future<FirebaseResult<UserCredential>> loginUsingEmailAndPassword(
       {required String email, required String password}) async {
     try {
-      var response =
-          await customFirebase.loginUser(email: email, password: password);
+      var response = await customFirebase.loginUsingEmailAndPassword(
+          email: email, password: password);
       return FirebaseResult.success(response);
     } catch (error) {
+      return FirebaseResult.failure(
+          FirebaseExceptions.getFirebaseException(error));
+    }
+  }
+
+  @override
+  Future<FirebaseResult<UserCredential>> loginUsingGoogle() async {
+    try {
+      UserCredential credential = await customFirebase.loginUsingGoogle();
+      return FirebaseResult.success(credential);
+    } catch (error) {
+      print(error);
       return FirebaseResult.failure(
           FirebaseExceptions.getFirebaseException(error));
     }
@@ -27,8 +39,8 @@ class AuthRepoImplementation implements AuthRepo {
   Future<FirebaseResult<UserCredential>> signupUsingEmailAndPassword(
       {required String email, required String password}) async {
     try {
-      var response =
-          await customFirebase.createUser(email: email, password: password);
+      var response = await customFirebase.signupUsingEmailAndPassword(
+          email: email, password: password);
       return FirebaseResult.success(response);
     } catch (error) {
       return FirebaseResult.failure(

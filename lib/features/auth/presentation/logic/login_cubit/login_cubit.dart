@@ -32,6 +32,24 @@ class LoginCubit extends Cubit<LoginState> {
     );
   }
 
+  Future<void> loginUsingGoogle() async {
+    emit(LoginLoading());
+    var response = await authRepoImplementation.loginUsingGoogle();
+    response.when(
+      success: (credential) {
+        emit(LoginSuccess(credential: credential));
+      },
+      failure: (FirebaseExceptions firebaseExceptions) {
+        emit(
+          LoginFailure(
+            errorMessage:
+                FirebaseExceptions.getErrorMessage(firebaseExceptions),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> resetPassword({required String email}) async {
     emit(LoginResetPasswordLoading());
     await Future.delayed(

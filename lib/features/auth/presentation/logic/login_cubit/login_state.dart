@@ -17,6 +17,16 @@ class LoginResetPasswordFailure extends LoginState {
   LoginResetPasswordFailure({required this.errorMessage});
 }
 
+class LoginUsingGoogleSuccess extends LoginState {}
+
+class LoginUsingGoogleLoading extends LoginState {}
+
+class LoginUsingGoogleFailure extends LoginState {
+  final String errorMessage;
+
+  LoginUsingGoogleFailure(this.errorMessage);
+}
+
 class LoginSuccess extends LoginState {
   final UserCredential credential;
 

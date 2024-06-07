@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rive/rive.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart'
-    as get_transitions;
+as get_transitions;
+import 'package:rive/rive.dart';
+
 import '../../../../../constants.dart';
 import '../../../../../core/router/app_router.dart';
 import '../../../../../core/utils/assets_data.dart';
@@ -53,7 +54,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
             ),
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
               child: ScrollConfiguration(
                 behavior: MyBehavior(),
                 child: ListView(
@@ -117,8 +118,8 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                           if (_formKey.currentState!.validate()) {
                             BlocProvider.of<LoginCubit>(context)
                                 .loginUsingEmailAndPassword(
-                                    email: _emailController.text,
-                                    password: _passwordController.text);
+                                email: _emailController.text,
+                                password: _passwordController.text);
                           } else {
                             autoValidateMode = AutovalidateMode.always;
                             setState(() {});
@@ -135,8 +136,12 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Center(
+                    Center(
                       child: LoginMethod(
+                        onTap: () {
+                          BlocProvider.of<LoginCubit>(context)
+                              .loginUsingGoogle();
+                        },
                         icon: FontAwesomeIcons.google,
                         text: "Continue With Google",
                       ),
