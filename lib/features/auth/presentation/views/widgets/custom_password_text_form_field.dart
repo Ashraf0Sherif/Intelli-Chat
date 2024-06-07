@@ -19,12 +19,6 @@ class _CustomPasswordTextFormFieldState
   bool isSecure = true;
 
   @override
-  void dispose() {
-    widget.passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return CustomTextFormField(
       controller: widget.passwordController,

@@ -5,8 +5,8 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:intellichat/core/utils/assets_data.dart';
 import 'package:intellichat/core/utils/widgets/login_method.dart';
 import 'package:intellichat/core/utils/widgets/my_behavior.dart';
-import 'package:intellichat/features/auth/presentation/widgets/custom_password_text_form_field.dart';
-import 'package:intellichat/features/auth/presentation/widgets/custom_text_form_field.dart';
+import 'package:intellichat/features/auth/presentation/views/widgets/custom_password_text_form_field.dart';
+import 'package:intellichat/features/auth/presentation/views/widgets/custom_text_form_field.dart';
 import 'package:rive/rive.dart';
 
 import '../../../../constants.dart';
@@ -21,10 +21,17 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +40,7 @@ class _LoginViewState extends State<LoginView> {
       child: Scaffold(
         body: Form(
           key: _formKey,
-          autovalidateMode: autovalidateMode,
+          autovalidateMode: autoValidateMode,
           child: Container(
             decoration: const BoxDecoration(
               gradient: painting.LinearGradient(
@@ -107,7 +114,7 @@ class _LoginViewState extends State<LoginView> {
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
                           } else {
-                            autovalidateMode = AutovalidateMode.always;
+                            autoValidateMode = AutovalidateMode.always;
                             setState(() {});
                           }
                         },

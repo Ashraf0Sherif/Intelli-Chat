@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intellichat/features/home/presentation/widgets/send_message_widget.dart';
+import 'package:intellichat/features/home/presentation/views/widgets/send_message_widget.dart';
 
 import 'not_logged_in.dart';
 

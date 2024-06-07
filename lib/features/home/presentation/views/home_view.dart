@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:intellichat/constants.dart';
-import 'package:intellichat/features/home/presentation/widgets/home_view_body.dart';
+import 'package:intellichat/features/home/presentation/views/widgets/drawer_body.dart';
+import 'package:intellichat/features/home/presentation/views/widgets/home_view_body.dart';
 
 import '../../../../core/router/app_router.dart';
-import '../widgets/drawer_body.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});

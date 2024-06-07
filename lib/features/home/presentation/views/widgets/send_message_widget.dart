@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../constants.dart';
-import '../../../auth/presentation/widgets/custom_text_form_field.dart';
+import '../../../../../constants.dart';
+import '../../../../auth/presentation/views/widgets/custom_text_form_field.dart';
 
 class SendMessageWidget extends StatefulWidget {
   const SendMessageWidget({

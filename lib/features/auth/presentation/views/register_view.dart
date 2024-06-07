@@ -3,12 +3,12 @@ import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intellichat/core/utils/styles.dart';
+import 'package:intellichat/features/auth/presentation/views/widgets/custom_password_text_form_field.dart';
+import 'package:intellichat/features/auth/presentation/views/widgets/custom_text_form_field.dart';
 
 import '../../../../constants.dart';
 import '../../../../core/utils/widgets/login_method.dart';
 import '../../../../core/utils/widgets/my_behavior.dart';
-import '../widgets/custom_password_text_form_field.dart';
-import '../widgets/custom_text_form_field.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -18,9 +18,18 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
