@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intellichat/core/utils/assets_data.dart';
+import 'package:intellichat/core/utils/styles.dart';
 import 'package:intellichat/core/utils/widgets/my_behavior.dart';
 import 'package:rive/rive.dart';
 
@@ -13,15 +15,19 @@ class NotLoggedIn extends StatelessWidget {
         children: const [
           SizedBox(
             height: 180,
-            child: RiveAnimation.asset('assets/rive/new_file.riv'),
+            child: RiveAnimation.asset(AssetsData.kRiveChatting),
           ),
-          Text(
-            "Hello Boss!",
-            style: TextStyle(fontSize: 36),
+          Center(
+            child: Text(
+              "Hello Boss!",
+              style: Styles.kTextStyle36,
+            ),
           ),
-          Text(
-            "I'm ready for help you",
-            style: TextStyle(fontSize: 26),
+          Center(
+            child: Text(
+              "I'm ready for help you",
+              style: Styles.kTextStyle26,
+            ),
           ),
           SizedBox(
             height: 10,

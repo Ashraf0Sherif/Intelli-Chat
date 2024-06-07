@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intellichat/features/onboarding/presentation/views/onboarding.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
+import '../../../../core/router/app_router.dart';
 import '../../../../core/utils/assets_data.dart';
 
 class SplashViewBody extends StatefulWidget {
@@ -13,17 +14,12 @@ class SplashViewBody extends StatefulWidget {
 class _SplashViewBodyState extends State<SplashViewBody> {
   void _homeNavigation() {
     Future.delayed(
-      const Duration(seconds: 2),
-      () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const OnBoarding();
-            },
-          ),
-        );
-      },
+      // TODO: Handle logged in or not
+      const Duration(seconds: 1),
+      () => AppRouter.pushReplacementNavigation(
+          view: AppRouter.kOnboarding,
+          milliseconds: 1200,
+          transition: Transition.fadeIn),
     );
   }
 

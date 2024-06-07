@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:intellichat/core/utils/styles.dart';
 
 import '../../../../constants.dart';
 import '../../../../core/utils/widgets/login_method.dart';
@@ -32,7 +34,7 @@ class _RegisterViewState extends State<RegisterView> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal:18),
+            padding: const EdgeInsets.symmetric(horizontal: 18),
             child: ScrollConfiguration(
               behavior: MyBehavior(),
               child: ListView(
@@ -46,14 +48,14 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   const Text(
                     "Create an account.",
-                    style: TextStyle(fontSize: 28),
+                    style: Styles.kTextStyle28,
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
+                  Text(
                     "Sign for a free account. Get easier than search engines results.",
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                    style: Styles.kTextStyle16.copyWith(color: Colors.grey),
                   ),
                   const SizedBox(
                     height: 26,
@@ -95,7 +97,7 @@ class _RegisterViewState extends State<RegisterView> {
                       const Text("Already have an account? "),
                       InkWell(
                         onTap: () {
-                          Navigator.pop(context);
+                          Get.back();
                         },
                         child: const Text(
                           "Login",

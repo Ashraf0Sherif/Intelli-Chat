@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intellichat/core/utils/styles.dart';
 import 'package:intellichat/core/utils/widgets/my_behavior.dart';
 
 import '../../../auth/presentation/widgets/custom_text_form_field.dart';
@@ -51,26 +52,28 @@ class _DrawerListViewState extends State<DrawerListView> {
           const SizedBox(
             height: 10,
           ),
-          const Column(
+           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "Web page",
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              SizedBox(
+              const SizedBox(
+                height: 10,
+              ),
+              Text("Web page",
+                  style: Styles.kTextStyle14
+                      .copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(
                 height: 10,
               ),
               Text("Web page", style: TextStyle(fontWeight: FontWeight.w600)),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text("Web page", style: TextStyle(fontWeight: FontWeight.w600)),
-              SizedBox(
-                height: 10,
-              ),
-              Text("Web page", style: TextStyle(fontWeight: FontWeight.w600)),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
             ],

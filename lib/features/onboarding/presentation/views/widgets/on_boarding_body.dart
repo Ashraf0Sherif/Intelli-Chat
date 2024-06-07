@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:intellichat/core/utils/styles.dart';
 import 'package:intellichat/core/utils/widgets/custom_button.dart';
-import 'package:intellichat/features/home/presentation/views/home_view.dart';
 
+import '../../../../../core/router/app_router.dart';
 import '../../../../../core/utils/assets_data.dart';
 
 class OnBoardingBody extends StatelessWidget {
@@ -36,7 +38,7 @@ class OnBoardingBody extends StatelessWidget {
           ),
           const Text(
             "Start Free Conversation",
-            style: TextStyle(fontSize: 38),
+            style: Styles.kTextStyle38,
           ),
           const SizedBox(
             height: 40,
@@ -55,17 +57,14 @@ class OnBoardingBody extends StatelessWidget {
           ),
           Center(
             child: CustomButton(
-                label: 'Skip',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const HomeView();
-                      },
-                    ),
-                  );
-                }),
+              label: 'Skip',
+              onPressed: () {
+                AppRouter.pushNavigation(
+                    view: AppRouter.kHomeView,
+                    milliseconds: 240,
+                    transition: Transition.leftToRightWithFade);
+              },
+            ),
           ),
         ],
       ),

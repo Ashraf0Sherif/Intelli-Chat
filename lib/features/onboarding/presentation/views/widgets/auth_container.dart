@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intellichat/features/auth/presentation/views/login_view.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:intellichat/core/router/app_router.dart';
 
 import '../../../../../core/utils/widgets/login_method.dart';
 
@@ -33,14 +34,10 @@ class AuthContainer extends StatelessWidget {
             ),
             LoginMethod(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginView();
-                    },
-                  ),
-                );
+                AppRouter.pushNavigation(
+                    view: AppRouter.kLoginView,
+                    milliseconds: 240,
+                    transition: Transition.leftToRightWithFade);
               },
               text: "Login to existing account",
             ),

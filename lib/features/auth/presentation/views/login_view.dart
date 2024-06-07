@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:intellichat/core/utils/assets_data.dart';
 import 'package:intellichat/core/utils/widgets/login_method.dart';
 import 'package:intellichat/core/utils/widgets/my_behavior.dart';
-import 'package:intellichat/features/auth/presentation/views/register_view.dart';
 import 'package:intellichat/features/auth/presentation/widgets/custom_password_text_form_field.dart';
 import 'package:intellichat/features/auth/presentation/widgets/custom_text_form_field.dart';
 import 'package:rive/rive.dart';
 
 import '../../../../constants.dart';
+import '../../../../core/router/app_router.dart';
+import '../../../../core/utils/styles.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -45,7 +48,7 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(
                     height: 75,
                     child: RiveAnimation.asset(
-                      'assets/rive/sendwave.riv',
+                      AssetsData.kRiveRobot,
                     ),
                   ),
                   const SizedBox(
@@ -53,14 +56,14 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const Text(
                     "Welcome back to login!",
-                    style: TextStyle(fontSize: 28),
+                    style: Styles.kTextStyle28,
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
+                  Text(
                     "Login to your account. Get easier than search engines results.",
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                    style: Styles.kTextStyle16.copyWith(color: Colors.grey),
                   ),
                   const SizedBox(
                     height: 26,
@@ -116,19 +119,15 @@ class _LoginViewState extends State<LoginView> {
                       Flexible(
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const RegisterView();
-                                },
-                              ),
-                            );
+                            AppRouter.pushNavigation(
+                                view: AppRouter.kRegisterView,
+                                milliseconds: 240,
+                                transition: Transition.leftToRightWithFade);
                           },
                           child: const Text(
                             "Create an account",
                             style: TextStyle(color: kSecondaryColor2),
-                            overflow: TextOverflow.ellipsis ,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
