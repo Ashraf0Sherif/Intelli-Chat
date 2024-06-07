@@ -22,118 +22,138 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: painting.LinearGradient(
-              colors: [kPrimaryColor, kSecondaryColor],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
+        body: Form(
+          key: _formKey,
+          autovalidateMode: autovalidateMode,
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: painting.LinearGradient(
+                colors: [kPrimaryColor, kSecondaryColor],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
-            child: ScrollConfiguration(
-              behavior: MyBehavior(),
-              child: ListView(
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const SizedBox(
-                    height: 75,
-                    child: RiveAnimation.asset(
-                      AssetsData.kRiveRobot,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
+              child: ScrollConfiguration(
+                behavior: MyBehavior(),
+                child: ListView(
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(
-                    "Welcome back to login!",
-                    style: Styles.kTextStyle28,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "Login to your account. Get easier than search engines results.",
-                    style: Styles.kTextStyle16.copyWith(color: Colors.grey),
-                  ),
-                  const SizedBox(
-                    height: 26,
-                  ),
-                  CustomTextFormField(
-                      label: 'Email',
-                      hintText: "Enter Your Email",
-                      onChanged: (te) {},
-                      controller: _emailController),
-                  const SizedBox(
-                    height: 26,
-                  ),
-                  const CustomPasswordTextFormField(label: 'Password'),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                          onPressed: () {},
-                          child: const Text("Reset Password")),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Center(
-                    child: LoginMethod(text: 'Login'),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Divider(
-                    thickness: 1,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Center(
-                    child: LoginMethod(
-                      icon: FontAwesomeIcons.google,
-                      text: "Continue With Google",
+                    const SizedBox(
+                      height: 75,
+                      child: RiveAnimation.asset(
+                        AssetsData.kRiveRobot,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Don't have an account? "),
-                      Flexible(
-                        child: InkWell(
-                          onTap: () {
-                            AppRouter.pushNavigation(
-                                view: AppRouter.kRegisterView,
-                                milliseconds: 240,
-                                transition: Transition.leftToRightWithFade);
-                          },
-                          child: const Text(
-                            "Create an account",
-                            style: TextStyle(color: kSecondaryColor2),
-                            overflow: TextOverflow.ellipsis,
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text(
+                      "Welcome back to login!",
+                      style: Styles.kTextStyle28,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Login to your account. Get easier than search engines results.",
+                      style: Styles.kTextStyle16.copyWith(color: Colors.grey),
+                    ),
+                    const SizedBox(
+                      height: 26,
+                    ),
+                    CustomTextFormField(
+                        label: 'Email',
+                        hintText: "Enter Your Email",
+                        onChanged: (te) {},
+                        controller: _emailController),
+                    const SizedBox(
+                      height: 26,
+                    ),
+                    CustomPasswordTextFormField(
+                      label: 'Password',
+                      passwordController: _passwordController,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            onPressed: () {},
+                            child: const Text("Reset Password")),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Center(
+                      child: LoginMethod(
+                        text: 'Login',
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                          } else {
+                            autovalidateMode = AutovalidateMode.always;
+                            setState(() {});
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Divider(
+                      thickness: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Center(
+                      child: LoginMethod(
+                        icon: FontAwesomeIcons.google,
+                        text: "Continue With Google",
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Don't have an account? "),
+                        Flexible(
+                          child: InkWell(
+                            onTap: () {
+                              AppRouter.pushNavigation(
+                                  view: AppRouter.kRegisterView,
+                                  milliseconds: 240,
+                                  transition: Transition.leftToRightWithFade);
+                            },
+                            child: const Text(
+                              "Create an account",
+                              style: TextStyle(color: kSecondaryColor2),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

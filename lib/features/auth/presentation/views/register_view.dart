@@ -19,6 +19,8 @@ class RegisterView extends StatefulWidget {
 
 class _RegisterViewState extends State<RegisterView> {
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +70,17 @@ class _RegisterViewState extends State<RegisterView> {
                   const SizedBox(
                     height: 26,
                   ),
-                  const CustomPasswordTextFormField(label: 'Password'),
+                  CustomPasswordTextFormField(
+                    label: 'Password',
+                    passwordController: _passwordController,
+                  ),
                   const SizedBox(
                     height: 26,
                   ),
-                  const CustomPasswordTextFormField(label: 'Confirm Password'),
+                  CustomPasswordTextFormField(
+                    label: 'Confirm Password',
+                    passwordController: _confirmPasswordController,
+                  ),
                   const SizedBox(
                     height: 16,
                   ),
