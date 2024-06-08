@@ -99,7 +99,6 @@ class _CustomDashChatState extends State<CustomDashChat> {
     setState(
       () {
         _messages.insert(0, chatMessage);
-        print(_messages[0].user.firstName);
       },
     );
   }

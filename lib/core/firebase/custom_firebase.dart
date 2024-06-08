@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intellichat/constants.dart';
 
 class CustomFirebase {
   Future<UserCredential> loginUsingEmailAndPassword(
@@ -43,7 +44,8 @@ class CustomFirebase {
   }
 
   Future<void> addUser() async {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    CollectionReference users =
+        FirebaseFirestore.instance.collection(kUserCollection);
     await users.add(
       {
         'id': FirebaseAuth.instance.currentUser!.uid,

@@ -23,12 +23,12 @@ class IntelliChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: kPrimaryColor,
-          textTheme:
-              GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
-        ),
-        debugShowCheckedModeBanner: false,
-        home: const SplashView());
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: kPrimaryColor,
+        textTheme: GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
+      ),
+      debugShowCheckedModeBanner: false,
+      home: const SplashView(),
+    );
   }
 }
