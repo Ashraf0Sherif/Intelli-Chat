@@ -13,13 +13,15 @@ class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit(this.authRepoImplementation) : super(RegisterInitial());
 
   Future<void> signupUsingEmailAndPassword(
-      {required String email, required String password}) async {
+      {required String email,
+      required String password,
+      required String username}) async {
     emit(RegisterLoading());
     await Future.delayed(
       const Duration(milliseconds: 1500),
       () async {
         var response = await authRepoImplementation.signupUsingEmailAndPassword(
-            email: email, password: password);
+            email: email, password: password, username: username);
         response.when(
           success: (credential) {
             emit(RegisterSuccess(credential: credential));

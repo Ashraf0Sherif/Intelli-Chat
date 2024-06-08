@@ -20,7 +20,7 @@ class _SplashViewBodyState extends State<SplashViewBody> {
       () => AppRouter.pushReplacementNavigation(
           view: FirebaseAuth.instance.currentUser == null
               ? AppRouter.kOnboarding
-              : AppRouter.kHomeView,
+              : AppRouter.kChatView,
           milliseconds: 1200,
           transition: Transition.fadeIn),
     );

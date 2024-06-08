@@ -23,8 +23,9 @@ class LoginView extends StatelessWidget {
           showLoadingDialog(context);
         } else if (state is LoginSuccess) {
           if (state.credential.user!.emailVerified) {
+            BlocProvider.of<LoginCubit>(context).addUser();
             AppRouter.pushReplacementAll(
-                view: AppRouter.kHomeView,
+                view: AppRouter.kChatView,
                 milliseconds: 1200,
                 transition: get_transitions.Transition.fadeIn);
           } else {
@@ -46,7 +47,7 @@ class LoginView extends StatelessWidget {
           showLoadingDialog(context);
         } else if (state is LoginResetPasswordSuccess) {
           AppRouter.pushReplacementAll(
-              view: AppRouter.kHomeView,
+              view: AppRouter.kChatView,
               milliseconds: 1200,
               transition: get_transitions.Transition.fadeIn);
         }

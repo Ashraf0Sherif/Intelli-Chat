@@ -60,7 +60,7 @@ class OnBoardingBody extends StatelessWidget {
               label: 'Skip',
               onPressed: () {
                 AppRouter.pushNavigation(
-                    view: AppRouter.kHomeView,
+                    view: AppRouter.kChatView,
                     milliseconds: 240,
                     transition: Transition.leftToRightWithFade);
               },

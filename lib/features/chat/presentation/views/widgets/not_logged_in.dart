@@ -4,8 +4,8 @@ import 'package:intellichat/core/utils/styles.dart';
 import 'package:intellichat/core/utils/widgets/my_behavior.dart';
 import 'package:rive/rive.dart';
 
-class NotLoggedIn extends StatelessWidget {
-  const NotLoggedIn({super.key});
+class WelcomeWidget extends StatelessWidget {
+  const WelcomeWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

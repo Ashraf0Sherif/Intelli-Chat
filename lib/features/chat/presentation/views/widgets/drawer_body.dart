@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intellichat/core/router/app_router.dart';
 import 'package:intellichat/core/utils/styles.dart';
 
 import '../../../../../constants.dart';
@@ -19,8 +22,11 @@ class _DrawerBodyState extends State<DrawerBody> {
   @override
   void initState() {
     if (FirebaseAuth.instance.currentUser != null) {
-      userName = FirebaseAuth.instance.currentUser!.email!;
-      userName = userName.split('@').first;
+      if (FirebaseAuth.instance.currentUser!.displayName == null) {
+        userName = FirebaseAuth.instance.currentUser!.email!;
+      } else {
+        userName = FirebaseAuth.instance.currentUser!.displayName!;
+      }
     }
     super.initState();
   }
@@ -43,7 +49,7 @@ class _DrawerBodyState extends State<DrawerBody> {
                 children: [
                   Image.asset(
                     'assets/images/logo_pic.png',
-                    height: 20,
+                    height: 22,
                   ),
                   const SizedBox(
                     width: 10,
@@ -52,12 +58,19 @@ class _DrawerBodyState extends State<DrawerBody> {
                     child: Text(
                       userName,
                       overflow: TextOverflow.ellipsis,
-                      style: Styles.kTextStyle12,
+                      style: Styles.kTextStyle16,
                     ),
                   ),
                   if (FirebaseAuth.instance.currentUser != null)
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                        GoogleSignIn().signOut();
+                        AppRouter.pushReplacementAll(
+                            view: AppRouter.kChatView,
+                            milliseconds: 1200,
+                            transition: Transition.fadeIn);
+                      },
                       icon: const Icon(
                         FontAwesomeIcons.rightFromBracket,
                         color: Colors.red,

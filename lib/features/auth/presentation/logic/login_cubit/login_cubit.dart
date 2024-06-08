@@ -18,7 +18,7 @@ class LoginCubit extends Cubit<LoginState> {
     var response = await authRepoImplementation.loginUsingEmailAndPassword(
         email: email, password: password);
     response.when(
-      success: (credential) {
+      success: (credential) async {
         emit(LoginSuccess(credential: credential));
       },
       failure: (FirebaseExceptions firebaseExceptions) {
@@ -71,5 +71,9 @@ class LoginCubit extends Cubit<LoginState> {
         );
       },
     );
+  }
+
+  Future<void> addUser() async {
+    await authRepoImplementation.addUser();
   }
 }

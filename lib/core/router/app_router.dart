@@ -6,21 +6,26 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart'
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
 import 'package:intellichat/features/auth/presentation/logic/register_cubit/register_cubit.dart';
 import 'package:intellichat/features/auth/repos/auth_repo_implementation.dart';
+import 'package:intellichat/features/chat/presentation/logic/chat_cubit/chat_cubit.dart';
+import 'package:intellichat/features/chat/presentation/views/chat_view.dart';
+import 'package:intellichat/features/chat/repos/chat_repo_implementation.dart';
 import 'package:intellichat/features/onboarding/presentation/views/onboarding.dart';
 
 import '../../features/auth/presentation/views/login_view.dart';
 import '../../features/auth/presentation/views/register_view.dart';
-import '../../features/home/presentation/views/home_view.dart';
 import '../di/dependency_injection.dart';
 
 abstract class AppRouter {
-  static const kHomeView = "/homeView";
+  static const kChatView = "/homeView";
   static const kLoginView = "/LoginView";
   static const kRegisterView = "/registerView";
   static const kOnboarding = "/onboarding";
 
   static final Map<String, Widget> _views = {
-    kHomeView: const HomeView(),
+    kChatView: BlocProvider(
+      create: (context) => ChatCubit(getIt.get<ChatRepoImplementation>()),
+      child: const ChatView(),
+    ),
     kLoginView: BlocProvider(
       create: (context) => LoginCubit(getIt.get<AuthRepoImplementation>()),
       child: const LoginView(),

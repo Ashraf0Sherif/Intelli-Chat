@@ -8,7 +8,8 @@ abstract class AuthRepo {
   Future<FirebaseResult<UserCredential>> loginUsingGoogle();
 
   Future<FirebaseResult<UserCredential>> signupUsingEmailAndPassword(
-      {required String email, required String password});
+      {required String email, required String password,required String username});
+  Future<FirebaseResult<void>> addUser();
 
   Future<void> resetPassword({required String email});
 }

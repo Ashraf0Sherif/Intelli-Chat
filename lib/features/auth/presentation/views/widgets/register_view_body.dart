@@ -23,6 +23,7 @@ class RegisterViewBody extends StatefulWidget {
 class _RegisterViewBodyState extends State<RegisterViewBody> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -80,9 +81,17 @@ class _RegisterViewBodyState extends State<RegisterViewBody> {
                       height: 26,
                     ),
                     CustomTextFormField(
+                        label: 'Username',
+                        hintText: "Enter Your username",
+                        onChanged: (text) {},
+                        controller: _usernameController),
+                    const SizedBox(
+                      height: 26,
+                    ),
+                    CustomTextFormField(
                         label: 'Email',
                         hintText: "Enter Your Email",
-                        onChanged: (te) {},
+                        onChanged: (text) {},
                         controller: _emailController),
                     const SizedBox(
                       height: 26,
@@ -117,8 +126,10 @@ class _RegisterViewBodyState extends State<RegisterViewBody> {
                             } else {
                               BlocProvider.of<RegisterCubit>(context)
                                   .signupUsingEmailAndPassword(
-                                      email: _emailController.text,
-                                      password: _passwordController.text);
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                                username: _usernameController.text,
+                              );
                             }
                           } else {
                             autoValidateMode = AutovalidateMode.always;
