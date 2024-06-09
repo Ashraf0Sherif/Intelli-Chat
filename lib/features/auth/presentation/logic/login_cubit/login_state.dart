@@ -28,9 +28,9 @@ class LoginUsingGoogleFailure extends LoginState {
 }
 
 class LoginSuccess extends LoginState {
-  final UserCredential credential;
+  final UserModel.User user;
 
-  LoginSuccess({required this.credential});
+  LoginSuccess({required this.user});
 }
 
 class LoginFailure extends LoginState {

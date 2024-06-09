@@ -33,7 +33,11 @@ class _CustomDashChatState extends State<CustomDashChat> {
       borderSide: BorderSide(color: color, width: 1.4),
     );
   }
-
+  @override
+  void initState() {
+    
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return ScrollConfiguration(

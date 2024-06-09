@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intellichat/features/auth/models/user_model/user.dart' as UserModel;
 import 'package:meta/meta.dart';
 
 import '../../../../../core/firebase/firebase_exceptions.dart';
@@ -18,8 +18,8 @@ class LoginCubit extends Cubit<LoginState> {
     var response = await authRepoImplementation.loginUsingEmailAndPassword(
         email: email, password: password);
     response.when(
-      success: (credential) async {
-        emit(LoginSuccess(credential: credential));
+      success: (user) async {
+        emit(LoginSuccess(user: user));
       },
       failure: (FirebaseExceptions firebaseExceptions) {
         emit(
@@ -36,8 +36,8 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginLoading());
     var response = await authRepoImplementation.loginUsingGoogle();
     response.when(
-      success: (credential) {
-        emit(LoginSuccess(credential: credential));
+      success: (user) {
+        emit(LoginSuccess(user: user));
       },
       failure: (FirebaseExceptions firebaseExceptions) {
         emit(
@@ -71,9 +71,5 @@ class LoginCubit extends Cubit<LoginState> {
         );
       },
     );
-  }
-
-  Future<void> addUser() async {
-    await authRepoImplementation.addUser();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,15 +20,23 @@ class DrawerBody extends StatefulWidget {
 class _DrawerBodyState extends State<DrawerBody> {
   String userName = "guest";
 
+  void getDisplayName() async {
+    var userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    if (userDoc.exists && userDoc.data() != null) {
+      setState(
+        () {
+          userName = userDoc.data()!['displayName'];
+        },
+      );
+    }
+  }
+
   @override
   void initState() {
-    if (FirebaseAuth.instance.currentUser != null) {
-      if (FirebaseAuth.instance.currentUser!.displayName == null) {
-        userName = FirebaseAuth.instance.currentUser!.email!;
-      } else {
-        userName = FirebaseAuth.instance.currentUser!.displayName!;
-      }
-    }
+    getDisplayName();
     super.initState();
   }
 
