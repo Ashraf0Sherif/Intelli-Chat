@@ -1,5 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:intellichat/features/auth/models/user_model/user.dart' as UserModel;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intellichat/features/auth/models/user_model/user.dart'
+    as UserModel;
 import 'package:meta/meta.dart';
 
 import '../../../../../core/firebase/firebase_exceptions.dart';
@@ -19,7 +22,7 @@ class LoginCubit extends Cubit<LoginState> {
         email: email, password: password);
     response.when(
       success: (user) async {
-        emit(LoginSuccess(user: user));
+        emit(LoginSuccess(user));
       },
       failure: (FirebaseExceptions firebaseExceptions) {
         emit(
@@ -37,7 +40,7 @@ class LoginCubit extends Cubit<LoginState> {
     var response = await authRepoImplementation.loginUsingGoogle();
     response.when(
       success: (user) {
-        emit(LoginSuccess(user: user));
+        emit(LoginSuccess(user));
       },
       failure: (FirebaseExceptions firebaseExceptions) {
         emit(
@@ -48,6 +51,16 @@ class LoginCubit extends Cubit<LoginState> {
         );
       },
     );
+  }
+
+  Future<void> signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      await GoogleSignIn().signOut();
+      emit(LoginInitial());
+    } catch (error) {
+      emit(LoginLogoutFailure());
+    }
   }
 
   Future<void> resetPassword({required String email}) async {

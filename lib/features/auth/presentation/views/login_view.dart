@@ -41,10 +41,6 @@ class LoginView extends StatelessWidget {
           showLoadingDialog(context);
         } else if (state is LoginResetPasswordFailure) {
           showSnackBar(context, message: state.errorMessage);
-        } else if (state is LoginUsingGoogleFailure) {
-          showSnackBar(context, message: state.errorMessage);
-        } else if (state is LoginResetPasswordLoading) {
-          showLoadingDialog(context);
         }
       },
       child: const LoginViewBody(),

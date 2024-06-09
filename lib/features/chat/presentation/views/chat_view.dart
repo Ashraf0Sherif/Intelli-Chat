@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart'
     as get_transitions;
+import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/chat_view_body.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/drawer_body.dart';
 
@@ -33,24 +34,31 @@ class ChatView extends StatelessWidget {
             elevation: 0,
             title: const Text("Intelli-Chat"),
             actions: [
-              if (FirebaseAuth.instance.currentUser == null)
-                Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: kSecondaryColor2),
-                    child: InkWell(
-                        onTap: () {
-                          AppRouter.pushNavigation(
-                              view: AppRouter.kLoginView,
-                              milliseconds: 240,
-                              transition: get_transitions
-                                  .Transition.leftToRightWithFade);
-                        },
-                        child: const Text("Login")),
-                  ),
-                ),
+              BlocBuilder<LoginCubit, LoginState>(
+                builder: (context, state) {
+                  if (state is LoginInitial) {
+                    return Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: kSecondaryColor2),
+                        child: InkWell(
+                            onTap: () {
+                              AppRouter.pushNavigation(
+                                  view: AppRouter.kLoginView,
+                                  milliseconds: 240,
+                                  transition: get_transitions
+                                      .Transition.leftToRightWithFade);
+                            },
+                            child: const Text("Login")),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+              ),
               const SizedBox(
                 width: 20,
               )

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart'
     as get_transitions;
-import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
 import 'package:intellichat/features/auth/presentation/logic/register_cubit/register_cubit.dart';
 import 'package:intellichat/features/auth/repos/auth_repo_implementation.dart';
 import 'package:intellichat/features/chat/presentation/logic/chat_cubit/chat_cubit.dart';
@@ -26,10 +25,7 @@ abstract class AppRouter {
       create: (context) => ChatCubit(getIt.get<ChatRepoImplementation>()),
       child: const ChatView(),
     ),
-    kLoginView: BlocProvider(
-      create: (context) => LoginCubit(getIt.get<AuthRepoImplementation>()),
-      child: const LoginView(),
-    ),
+    kLoginView: const LoginView(),
     kRegisterView: BlocProvider(
       create: (context) => RegisterCubit(getIt.get<AuthRepoImplementation>()),
       child: const RegisterView(),
