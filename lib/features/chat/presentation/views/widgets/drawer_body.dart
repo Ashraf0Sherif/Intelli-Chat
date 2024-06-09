@@ -38,7 +38,23 @@ class _DrawerBodyState extends State<DrawerBody> {
               return Column(
                 children: [
                   const SizedBox(
-                    height: 30,
+                    height: 50,
+                  ),
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/images/logo_pic.png',
+                        height: 20,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      const Text("Intelli-Chat")
+                    ],
+                  ),
+                  const Divider(),
+                  const SizedBox(
+                    height: 10,
                   ),
                   const Expanded(child: DrawerListView()),
                   Row(

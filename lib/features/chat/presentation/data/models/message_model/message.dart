@@ -7,6 +7,10 @@ class Message {
   Message({this.message});
 
   factory Message.fromJson(json) => _$MessageFromJson(json);
-
   Map<String, dynamic> toJson() => _$MessageToJson(this);
+  @override
+  String toString() {
+    print(message);
+    return super.toString();
+  }
 }

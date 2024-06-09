@@ -1,13 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intellichat/constants.dart';
 import 'package:intellichat/features/auth/models/user_model/user.dart'
     as UserModel;
 
+import '../../features/chat/presentation/data/models/message_model/message.dart';
+import '../../features/chat/presentation/data/models/topic_model/topic.dart';
+
 class CustomFirebase {
   Future<UserModel.User> addToFirestore(User firebaseUser) async {
-    DocumentReference userDocRef =
-        FirebaseFirestore.instance.collection('users').doc(firebaseUser.uid);
+    DocumentReference userDocRef = FirebaseFirestore.instance
+        .collection(kUserCollection)
+        .doc(firebaseUser.uid);
     DocumentSnapshot userDoc = await userDocRef.get();
     if (!userDoc.exists) {
       String displayName = firebaseUser.displayName!;
@@ -20,13 +25,13 @@ class CustomFirebase {
       );
       userDoc = await userDocRef.get();
     }
-
+    List<Topic> topics = await getTopicsWithMessages(firebaseUser);
     Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
     UserModel.User user = UserModel.User(
-      id: firebaseUser.uid,
-      displayName: userData?['displayName'] ?? 'Anonymous',
-      email: userData?['email'] ?? '',
-    );
+        id: firebaseUser.uid,
+        displayName: userData?['displayName'] ?? 'Anonymous',
+        email: userData?['email'] ?? '',
+        topics: topics);
     return user;
   }
 
@@ -77,6 +82,50 @@ class CustomFirebase {
     user = FirebaseAuth.instance.currentUser!;
     addToFirestore(user);
     return userCredential;
+  }
+
+  Future<List<Topic>> getTopicsWithMessages(User firebaseUser) async {
+    QuerySnapshot topicsSnapshot = await FirebaseFirestore.instance
+        .collection(kUserCollection)
+        .doc(firebaseUser.uid)
+        .collection(kTopicsCollection)
+        .get();
+
+    List<Topic> topics = await Future.wait(topicsSnapshot.docs.map(
+      (doc) async {
+        String topicId = doc.id;
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+        List<Message> messages =
+            await getMessagesForTopic(firebaseUser.uid, topicId);
+
+        return Topic(
+          id: topicId,
+          title: data['title'] as String?,
+          messages: messages,
+        );
+      },
+    ).toList());
+
+    return topics;
+  }
+
+  Future<List<Message>> getMessagesForTopic(
+      String userId, String topicId) async {
+    QuerySnapshot messagesSnapshot = await FirebaseFirestore.instance
+        .collection(kUserCollection)
+        .doc(userId)
+        .collection(kTopicsCollection)
+        .doc(topicId)
+        .collection(kMessagesCollection)
+        .get();
+    List<Message> messages = messagesSnapshot.docs.map(
+      (doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Message.fromJson(data);
+      },
+    ).toList();
+    return messages;
   }
 
   Future<void> resetPassword({required String email}) async {
