@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intellichat/constants.dart';
@@ -90,7 +91,17 @@ class CustomFirebase {
         .doc(firebaseUser.uid)
         .collection(kTopicsCollection)
         .get();
-
+    if (topicsSnapshot.docs.isEmpty) {
+      await FirebaseFirestore.instance
+          .collection(kUserCollection)
+          .doc(firebaseUser.uid)
+          .collection(kTopicsCollection)
+          .add(
+        {
+          "title": "Your first topic",
+        },
+      );
+    }
     List<Topic> topics = await Future.wait(topicsSnapshot.docs.map(
       (doc) async {
         String topicId = doc.id;
@@ -106,7 +117,6 @@ class CustomFirebase {
         );
       },
     ).toList());
-
     return topics;
   }
 
@@ -126,6 +136,45 @@ class CustomFirebase {
       },
     ).toList();
     return messages;
+  }
+
+  Future<void> createTopic(
+      {required User firebaseUser, required String title}) async {
+    await FirebaseFirestore.instance
+        .collection(kUserCollection)
+        .doc(firebaseUser.uid)
+        .collection(kTopicsCollection)
+        .add(
+      {
+        'title': title,
+        'createdAt': DateTime.now(),
+      },
+    );
+  }
+
+  Future<void> removeTopic(
+      {required User firebaseUser, required String topicID}) async {
+    await FirebaseFirestore.instance
+        .collection(kUserCollection)
+        .doc(firebaseUser.uid)
+        .collection(kTopicsCollection)
+        .doc(topicID)
+        .delete();
+  }
+
+  Future<void> sendMessage(
+      User firebaseUser, String topicID, ChatMessage message) async {
+    await FirebaseFirestore.instance
+        .collection(kUserCollection)
+        .doc(firebaseUser.uid)
+        .collection(kTopicsCollection)
+        .doc(topicID)
+        .collection(kMessagesCollection)
+        .add({
+      'message': message.text,
+      'createdAt': message.createdAt,
+      'userID': message.user.id
+    });
   }
 
   Future<void> resetPassword({required String email}) async {

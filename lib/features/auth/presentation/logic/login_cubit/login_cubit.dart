@@ -12,6 +12,7 @@ part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepoImplementation authRepoImplementation;
+  UserModel.User? user;
 
   LoginCubit(this.authRepoImplementation) : super(LoginInitial());
 
@@ -22,7 +23,8 @@ class LoginCubit extends Cubit<LoginState> {
         email: email, password: password);
     response.when(
       success: (user) async {
-        emit(LoginSuccess(user));
+        this.user = user;
+        emit(LoginSuccess());
       },
       failure: (FirebaseExceptions firebaseExceptions) {
         emit(
@@ -40,7 +42,8 @@ class LoginCubit extends Cubit<LoginState> {
     var response = await authRepoImplementation.loginUsingGoogle();
     response.when(
       success: (user) {
-        emit(LoginSuccess(user));
+        this.user = user;
+        emit(LoginSuccess());
       },
       failure: (FirebaseExceptions firebaseExceptions) {
         emit(
@@ -58,7 +61,8 @@ class LoginCubit extends Cubit<LoginState> {
     var response =
         await authRepoImplementation.fetchUser(firebaseUser: firebaseUser);
     response.when(success: (user) {
-      emit(LoginSuccess(user));
+      this.user = user;
+      emit(LoginSuccess());
     }, failure: (FirebaseExceptions firebaseExceptions) {
       emit(
         LoginFailure(

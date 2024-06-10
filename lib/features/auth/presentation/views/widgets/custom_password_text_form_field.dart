@@ -17,7 +17,6 @@ class CustomPasswordTextFormField extends StatefulWidget {
 class _CustomPasswordTextFormFieldState
     extends State<CustomPasswordTextFormField> {
   bool isSecure = true;
-
   @override
   Widget build(BuildContext context) {
     return CustomTextFormField(

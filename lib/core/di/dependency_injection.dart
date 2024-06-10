@@ -12,7 +12,7 @@ void initGetIt() {
       () => AuthRepoImplementation(getIt()));
   getIt.registerLazySingleton<CustomFirebase>(() => CustomFirebase());
   getIt.registerLazySingleton<ChatRepoImplementation>(
-      () => ChatRepoImplementation(getIt()));
+      () => ChatRepoImplementation(getIt(), getIt()));
   getIt.registerLazySingleton<CustomGemini>(() => CustomGemini());
 }
 

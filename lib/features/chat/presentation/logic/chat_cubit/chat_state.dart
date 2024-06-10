@@ -7,6 +7,32 @@ class ChatInitial extends ChatState {}
 
 class ChatLoading extends ChatState {}
 
+class ChatRemoveLoading extends ChatState {}
+
+class ChatRemoveFailure extends ChatState {
+  final String errorMessage;
+
+  ChatRemoveFailure(this.errorMessage);
+}
+
+class ChatRemoveSuccess extends ChatState {}
+
+class ChatNewChatLoading extends ChatState {}
+
+class ChatNewChatSuccess extends ChatState {}
+
+class ChatNewChatFailure extends ChatState {
+  final String errorMessage;
+
+  ChatNewChatFailure(this.errorMessage);
+}
+
+class ChatSendMessageLoading extends ChatState {}
+
+class ChatSendMessageSuccess extends ChatState {}
+
+class ChatSendMessageFailure extends ChatState {}
+
 class ChatSuccess extends ChatState {
   final String geminiResponse;
 

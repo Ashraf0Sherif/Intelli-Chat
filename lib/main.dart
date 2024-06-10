@@ -5,6 +5,8 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intellichat/core/di/dependency_injection.dart' as di;
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
+import 'package:intellichat/features/chat/presentation/logic/chat_cubit/chat_cubit.dart';
+import 'package:intellichat/features/chat/repos/chat_repo_implementation.dart';
 import 'package:intellichat/firebase_options.dart';
 import 'package:intellichat/simple_bloc_observer.dart';
 
@@ -20,8 +22,13 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(BlocProvider(
-    create: (context) => LoginCubit(getIt.get<AuthRepoImplementation>()),
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(
+          create: (context) => LoginCubit(getIt.get<AuthRepoImplementation>())),
+      BlocProvider(
+          create: (context) => ChatCubit(getIt.get<ChatRepoImplementation>())),
+    ],
     child: const IntelliChat(),
   ));
 }

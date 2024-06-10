@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:intellichat/core/utils/styles.dart';
-import 'package:intellichat/core/utils/widgets/custom_button.dart';
 
-import '../../../../../core/router/app_router.dart';
 import '../../../../../core/utils/assets_data.dart';
 
 class OnBoardingBody extends StatelessWidget {
@@ -54,17 +51,6 @@ class OnBoardingBody extends StatelessWidget {
               style: TextStyle(color: Colors.grey)),
           const SizedBox(
             height: 20,
-          ),
-          Center(
-            child: CustomButton(
-              label: 'Skip',
-              onPressed: () {
-                AppRouter.pushNavigation(
-                    view: AppRouter.kChatView,
-                    milliseconds: 240,
-                    transition: Transition.leftToRightWithFade);
-              },
-            ),
           ),
         ],
       ),

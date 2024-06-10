@@ -68,9 +68,9 @@ class _DrawerBodyState extends State<DrawerBody> {
                       ),
                       Expanded(
                         child: Text(
-                          (state is LoginSuccess
-                              ? state.user.displayName!
-                              : "user"),
+                          BlocProvider.of<LoginCubit>(context)
+                              .user!
+                              .displayName!,
                           overflow: TextOverflow.ellipsis,
                           style: Styles.kTextStyle16,
                         ),
@@ -80,7 +80,7 @@ class _DrawerBodyState extends State<DrawerBody> {
                           onPressed: () {
                             BlocProvider.of<LoginCubit>(context).signOut();
                             AppRouter.pushReplacementAll(
-                                view: AppRouter.kChatView,
+                                view: AppRouter.kLoginView,
                                 milliseconds: 1200,
                                 transition: get_transitions.Transition.fadeIn);
                           },
