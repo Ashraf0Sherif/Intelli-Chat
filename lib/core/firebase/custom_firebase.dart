@@ -9,7 +9,7 @@ import '../../features/chat/presentation/data/models/message_model/message.dart'
 import '../../features/chat/presentation/data/models/topic_model/topic.dart';
 
 class CustomFirebase {
-  Future<UserModel.User> addToFirestore(User firebaseUser) async {
+  Future<UserModel.User> fetchUserDate(User firebaseUser) async {
     DocumentReference userDocRef = FirebaseFirestore.instance
         .collection(kUserCollection)
         .doc(firebaseUser.uid);
@@ -45,7 +45,7 @@ class CustomFirebase {
       password: password,
     );
     User? firebaseUser = userCredential.user;
-    UserModel.User user = await addToFirestore(firebaseUser!);
+    UserModel.User user = await fetchUserDate(firebaseUser!);
     return user;
   }
 
@@ -62,7 +62,7 @@ class CustomFirebase {
     UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
     User? firebaseUser = userCredential.user;
-    UserModel.User user = await addToFirestore(firebaseUser!);
+    UserModel.User user = await fetchUserDate(firebaseUser!);
     return user;
   }
 
@@ -80,7 +80,7 @@ class CustomFirebase {
     await user.updateDisplayName(username);
     await user.reload();
     user = FirebaseAuth.instance.currentUser!;
-    addToFirestore(user);
+    fetchUserDate(user);
     return userCredential;
   }
 

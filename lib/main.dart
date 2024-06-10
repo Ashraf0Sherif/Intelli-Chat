@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intellichat/core/di/dependency_injection.dart' as di;
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
 import 'package:intellichat/firebase_options.dart';
+import 'package:intellichat/simple_bloc_observer.dart';
 
 import 'constants.dart';
 import 'core/di/dependency_injection.dart';
@@ -15,6 +16,7 @@ import 'features/splash/presentation/views/splash_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   di.initGetIt();
+  Bloc.observer = SimpleBlocObserver();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

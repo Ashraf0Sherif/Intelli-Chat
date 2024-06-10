@@ -15,14 +15,14 @@ class SplashViewBody extends StatefulWidget {
 class _SplashViewBodyState extends State<SplashViewBody> {
   void _homeNavigation() {
     Future.delayed(
-      // TODO: Handle logged in or not
       const Duration(seconds: 1),
       () => AppRouter.pushReplacementNavigation(
-          view: FirebaseAuth.instance.currentUser == null
-              ? AppRouter.kOnboarding
-              : AppRouter.kChatView,
-          milliseconds: 1200,
-          transition: Transition.fadeIn),
+        view: FirebaseAuth.instance.currentUser == null
+            ? AppRouter.kOnboarding
+            : AppRouter.kChatView,
+        milliseconds: 1200,
+        transition: Transition.fadeIn,
+      ),
     );
   }
 

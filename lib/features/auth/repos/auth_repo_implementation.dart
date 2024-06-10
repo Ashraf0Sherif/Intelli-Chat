@@ -60,4 +60,16 @@ class AuthRepoImplementation implements AuthRepo {
           FirebaseExceptions.getFirebaseException(error));
     }
   }
+
+  @override
+  Future<FirebaseResult<UserModel.User>> fetchUser(
+      {required User firebaseUser}) async {
+    try {
+      var user = await customFirebase.fetchUserDate(firebaseUser);
+      return FirebaseResult.success(user);
+    } catch (error) {
+      return FirebaseResult.failure(
+          FirebaseExceptions.getFirebaseException(error));
+    }
+  }
 }

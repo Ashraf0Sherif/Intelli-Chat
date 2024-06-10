@@ -53,6 +53,21 @@ class LoginCubit extends Cubit<LoginState> {
     );
   }
 
+  Future<void> fetchUser({required User firebaseUser}) async {
+    emit(LoginLoading());
+    var response =
+        await authRepoImplementation.fetchUser(firebaseUser: firebaseUser);
+    response.when(success: (user) {
+      emit(LoginSuccess(user));
+    }, failure: (FirebaseExceptions firebaseExceptions) {
+      emit(
+        LoginFailure(
+          errorMessage: FirebaseExceptions.getErrorMessage(firebaseExceptions),
+        ),
+      );
+    });
+  }
+
   Future<void> signOut() async {
     try {
       await FirebaseAuth.instance.signOut();

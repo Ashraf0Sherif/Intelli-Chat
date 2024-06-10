@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,8 +11,24 @@ import 'package:intellichat/features/chat/presentation/views/widgets/drawer_body
 import '../../../../constants.dart';
 import '../../../../core/router/app_router.dart';
 
-class ChatView extends StatelessWidget {
+class ChatView extends StatefulWidget {
   const ChatView({super.key});
+
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> {
+  @override
+  void initState() {
+    final loginCubit = BlocProvider.of<LoginCubit>(context);
+    if (FirebaseAuth.instance.currentUser != null &&
+        loginCubit.state is LoginInitial) {
+      BlocProvider.of<LoginCubit>(context)
+          .fetchUser(firebaseUser: FirebaseAuth.instance.currentUser!);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +53,7 @@ class ChatView extends StatelessWidget {
             actions: [
               BlocBuilder<LoginCubit, LoginState>(
                 builder: (context, state) {
-                  if (state is LoginInitial) {
+                  if (state is! LoginSuccess) {
                     return Center(
                       child: Container(
                         padding: const EdgeInsets.all(10),
