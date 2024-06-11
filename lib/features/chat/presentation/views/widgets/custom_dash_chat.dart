@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -45,74 +46,126 @@ class _CustomDashChatState extends State<CustomDashChat> {
 
   @override
   Widget build(BuildContext context) {
-    return ScrollConfiguration(
-      behavior: MyBehavior(),
-      child: BlocBuilder<ChatCubit, ChatState>(
-        builder: (context, state) {
-          int currentIndex =
-              BlocProvider.of<ChatCubit>(context).currentTopicIndex;
-          return Column(
-            children: [
-              if (_messages.isEmpty) const Expanded(child: WelcomeWidget()),
-              Expanded(
-                child: DashChat(
-                  messageListOptions: const MessageListOptions(
-                    showDateSeparator: false,
-                  ),
-                  messageOptions: const MessageOptions(
-                    containerColor: kSecondaryColor,
-                    textColor: Colors.white,
-                    currentUserTextColor: kPrimaryColor,
-                    currentUserContainerColor: kSecondaryColor2,
-                  ),
-                  inputOptions: InputOptions(
-                    sendButtonBuilder: (onSend) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: InkWell(
-                          onTap: onSend,
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: kSecondaryColor,
-                            ),
-                            child: const Icon(
-                              FontAwesomeIcons.paperPlane,
-                              color: kSecondaryColor2,
+    return BlocBuilder<LoginCubit,LoginState>(
+  builder: (context, state) {
+    if(state is LoginFetchUserLoading){
+      return const Center(
+        child: CircularProgressIndicator(
+          color: kPrimaryColor,
+        ),
+      );
+    }
+    else{
+      return ScrollConfiguration(
+        behavior: MyBehavior(),
+        child: BlocConsumer<ChatCubit, ChatState>(
+          builder: (context, state) {
+            int currentIndex =
+                BlocProvider.of<ChatCubit>(context).currentTopicIndex;
+            return StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection(kUserCollection)
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection(kTopicsCollection)
+                  .doc(BlocProvider.of<LoginCubit>(context)
+                  .user!
+                  .topics![currentIndex]
+                  .id)
+                  .collection(kMessagesCollection)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  _messages.clear();
+                  for (var doc in snapshot.data!.docs) {
+                    Timestamp timestamp = doc['createdAt'] as Timestamp;
+                    DateTime dateTime = timestamp.toDate();
+                    _messages.add(
+                      ChatMessage(
+                        user: _currernUser,
+                        createdAt: dateTime,
+                        text: doc['message'],
+                      ),
+                    );
+                  }
+                  return Column(
+                    children: [
+                      if (_messages.isEmpty)
+                        const Expanded(child: WelcomeWidget()),
+                      Expanded(
+                        child: DashChat(
+                          messageListOptions: const MessageListOptions(
+                            showDateSeparator: false,
+                          ),
+                          messageOptions: const MessageOptions(
+                            containerColor: kSecondaryColor,
+                            textColor: Colors.white,
+                            currentUserTextColor: kPrimaryColor,
+                            currentUserContainerColor: kSecondaryColor2,
+                          ),
+                          inputOptions: InputOptions(
+                            sendButtonBuilder: (onSend) {
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: InkWell(
+                                  onTap: onSend,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: kSecondaryColor,
+                                    ),
+                                    child: const Icon(
+                                      FontAwesomeIcons.paperPlane,
+                                      color: kSecondaryColor2,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            textController: _messageController,
+                            inputDecoration: InputDecoration(
+                              filled: true,
+                              fillColor: kSecondaryColor.withOpacity(0.3),
+                              contentPadding: const EdgeInsets.all(15),
+                              enabledBorder: buildBorder(),
+                              focusedBorder: buildBorder(),
+                              border: buildBorder(),
+                              hintText: "Ask me anything",
                             ),
                           ),
+                          currentUser: _currernUser,
+                          onSend: (ChatMessage chatMessage) {
+                            getChatResponse(
+                              chatMessage: chatMessage,
+                              topicID: BlocProvider.of<LoginCubit>(context)
+                                  .user!
+                                  .topics![currentIndex]
+                                  .id!,
+                            );
+                          },
+                          messages: _messages,
                         ),
-                      );
-                    },
-                    textController: _messageController,
-                    inputDecoration: InputDecoration(
-                      filled: true,
-                      fillColor: kSecondaryColor.withOpacity(0.3),
-                      contentPadding: const EdgeInsets.all(15),
-                      enabledBorder: buildBorder(),
-                      focusedBorder: buildBorder(),
-                      border: buildBorder(),
-                      hintText: "Ask me anything",
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: kPrimaryColor,
                     ),
-                  ),
-                  currentUser: _currernUser,
-                  onSend: (ChatMessage chatMessage) {
-                    getChatResponse(
-                        chatMessage: chatMessage,
-                        topicID: BlocProvider.of<LoginCubit>(context)
-                            .user!
-                            .topics![currentIndex]
-                            .id!);
-                  },
-                  messages: _messages,
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
+                  );
+                }
+              },
+            );
+          },
+          listener: (BuildContext context, ChatState state) {
+            setState(() {});
+          },
+        ),
+      );
+    }
+  },
+);
   }
 
   void getChatResponse(

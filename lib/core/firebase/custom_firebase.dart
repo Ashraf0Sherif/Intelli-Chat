@@ -97,11 +97,9 @@ class CustomFirebase {
 
           List<Message> messages =
               await getMessagesForTopic(firebaseUser.uid, topicId);
-
           Timestamp? createdTimeStamp = data['createdAt'] as Timestamp?;
           DateTime createdAt =
               createdTimeStamp?.toDate() ?? DateTime(1970, 1, 1);
-
           return Topic(
             id: topicId,
             title: data['title'] as String?,
