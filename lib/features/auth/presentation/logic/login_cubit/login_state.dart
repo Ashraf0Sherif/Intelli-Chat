@@ -9,6 +9,16 @@ class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {}
 
+class LoginFetchUserLoading extends LoginState {}
+
+class LoginFetchUserFailure extends LoginState {
+  final String errorMessage;
+
+  LoginFetchUserFailure({required this.errorMessage});
+}
+
+class LoginFetchUserSuccess extends LoginState {}
+
 class LoginFailure extends LoginState {
   final String errorMessage;
 

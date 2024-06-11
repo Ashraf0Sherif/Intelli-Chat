@@ -8,9 +8,10 @@ part 'topic.g.dart';
 class Topic {
   String? id;
   String? title;
+  DateTime? createdAt;
   List<Message>? messages;
 
-  Topic({this.id, this.messages, this.title});
+  Topic({this.id, this.messages, this.title,this.createdAt});
 
   factory Topic.fromJson(json) => _$TopicFromJson(json);
 

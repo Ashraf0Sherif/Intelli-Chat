@@ -32,7 +32,7 @@ class _DrawerListViewState extends State<DrawerListView> {
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
       builder: (context, state) {
-        if (state is LoginLoading) {
+        if (state is LoginFetchUserLoading) {
           return const Center(
             child: CircularProgressIndicator(
               color: kPrimaryColor,
@@ -40,61 +40,51 @@ class _DrawerListViewState extends State<DrawerListView> {
           );
         } else {
           return ScrollConfiguration(
-            behavior: MyBehavior(),
-            child: BlocBuilder<LoginCubit, LoginState>(
-              builder: (context, state) {
-                if (state is LoginSuccess) {
-                  return ListView(
-                    padding: EdgeInsets.zero,
+              behavior: MyBehavior(),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  CustomTextFormField(
+                    label: 'Search chat history',
+                    onChanged: (text) {},
+                    controller: _searchController,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CustomTextFormField(
-                        label: 'Search chat history',
-                        onChanged: (text) {},
-                        controller: _searchController,
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Text("Recent Chats"),
-                          const Spacer(),
-                          IconButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return BlocProvider(
-                                    create: (context) => ChatCubit(
-                                        getIt.get<ChatRepoImplementation>()),
-                                    child: const CustomCreateAlertDialog(),
-                                  );
-                                },
+                      const Text("Recent Chats"),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return BlocProvider(
+                                create: (context) => ChatCubit(
+                                    getIt.get<ChatRepoImplementation>()),
+                                child: const CustomCreateAlertDialog(),
                               );
                             },
-                            icon: const Icon(
-                              FontAwesomeIcons.message,
-                              size: 18,
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      BlocProvider(
-                        create: (context) =>
-                            ChatCubit(getIt.get<ChatRepoImplementation>()),
-                        child: CustomTopicsListView(
-                            topics: BlocProvider.of<LoginCubit>(context)
-                                .user!
-                                .topics!),
-                      ),
+                          );
+                        },
+                        icon: const Icon(
+                          FontAwesomeIcons.message,
+                          size: 18,
+                        ),
+                      )
                     ],
-                  );
-                } else {
-                  return const Center(child: Text("Login"));
-                }
-              },
-            ),
-          );
+                  ),
+                  const SizedBox(height: 10),
+                  BlocProvider(
+                    create: (context) =>
+                        ChatCubit(getIt.get<ChatRepoImplementation>()),
+                    child: CustomTopicsListView(
+                        topics:
+                            BlocProvider.of<LoginCubit>(context).user!.topics!),
+                  ),
+                ],
+              ));
         }
       },
     );

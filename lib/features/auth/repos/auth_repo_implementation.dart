@@ -12,7 +12,7 @@ class AuthRepoImplementation implements AuthRepo {
   AuthRepoImplementation(this.customFirebase);
 
   @override
-  Future<FirebaseResult<UserModel.User>> loginUsingEmailAndPassword(
+  Future<FirebaseResult<UserCredential>> loginUsingEmailAndPassword(
       {required String email, required String password}) async {
     try {
       var response = await customFirebase.loginUsingEmailAndPassword(
@@ -25,7 +25,7 @@ class AuthRepoImplementation implements AuthRepo {
   }
 
   @override
-  Future<FirebaseResult<UserModel.User>> loginUsingGoogle() async {
+  Future<FirebaseResult<UserCredential>> loginUsingGoogle() async {
     try {
       var user = await customFirebase.loginUsingGoogle();
       return FirebaseResult.success(user);

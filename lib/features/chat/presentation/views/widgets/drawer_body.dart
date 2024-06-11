@@ -21,11 +21,6 @@ class _DrawerBodyState extends State<DrawerBody> {
   String userName = "guest";
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -75,7 +70,7 @@ class _DrawerBodyState extends State<DrawerBody> {
                           style: Styles.kTextStyle16,
                         ),
                       ),
-                      if (state is LoginSuccess)
+                      if (state is LoginFetchUserSuccess)
                         IconButton(
                           onPressed: () {
                             BlocProvider.of<LoginCubit>(context).signOut();

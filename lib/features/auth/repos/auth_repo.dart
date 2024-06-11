@@ -4,10 +4,10 @@ import 'package:intellichat/features/auth/models/user_model/user.dart'
     as UserModel;
 
 abstract class AuthRepo {
-  Future<FirebaseResult<UserModel.User>> loginUsingEmailAndPassword(
+  Future<FirebaseResult<UserCredential>> loginUsingEmailAndPassword(
       {required String email, required String password});
 
-  Future<FirebaseResult<UserModel.User>> loginUsingGoogle();
+  Future<FirebaseResult<UserCredential>> loginUsingGoogle();
 
   Future<FirebaseResult<UserModel.User>> fetchUser({required User firebaseUser});
 

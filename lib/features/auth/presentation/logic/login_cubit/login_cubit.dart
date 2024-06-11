@@ -23,7 +23,6 @@ class LoginCubit extends Cubit<LoginState> {
         email: email, password: password);
     response.when(
       success: (user) async {
-        this.user = user;
         emit(LoginSuccess());
       },
       failure: (FirebaseExceptions firebaseExceptions) {
@@ -42,7 +41,6 @@ class LoginCubit extends Cubit<LoginState> {
     var response = await authRepoImplementation.loginUsingGoogle();
     response.when(
       success: (user) {
-        this.user = user;
         emit(LoginSuccess());
       },
       failure: (FirebaseExceptions firebaseExceptions) {
@@ -57,15 +55,15 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> fetchUser({required User firebaseUser}) async {
-    emit(LoginLoading());
+    emit(LoginFetchUserLoading());
     var response =
         await authRepoImplementation.fetchUser(firebaseUser: firebaseUser);
     response.when(success: (user) {
       this.user = user;
-      emit(LoginSuccess());
+      emit(LoginFetchUserSuccess());
     }, failure: (FirebaseExceptions firebaseExceptions) {
       emit(
-        LoginFailure(
+        LoginFetchUserFailure(
           errorMessage: FirebaseExceptions.getErrorMessage(firebaseExceptions),
         ),
       );
