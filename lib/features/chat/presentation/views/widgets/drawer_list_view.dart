@@ -4,11 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intellichat/constants.dart';
 import 'package:intellichat/core/utils/widgets/my_behavior.dart';
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
-import 'package:intellichat/features/chat/presentation/logic/chat_cubit/chat_cubit.dart';
 
-import '../../../../../core/di/dependency_injection.dart';
 import '../../../../auth/presentation/views/widgets/custom_text_form_field.dart';
-import '../../../repos/chat_repo_implementation.dart';
 import 'custom_dialog.dart';
 import 'custom_topics_list_view.dart';
 
@@ -60,11 +57,7 @@ class _DrawerListViewState extends State<DrawerListView> {
                           showDialog(
                             context: context,
                             builder: (context) {
-                              return BlocProvider(
-                                create: (context) => ChatCubit(
-                                    getIt.get<ChatRepoImplementation>()),
-                                child: const CustomCreateAlertDialog(),
-                              );
+                              return const CustomCreateAlertDialog();
                             },
                           );
                         },
@@ -76,13 +69,9 @@ class _DrawerListViewState extends State<DrawerListView> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  BlocProvider(
-                    create: (context) =>
-                        ChatCubit(getIt.get<ChatRepoImplementation>()),
-                    child: CustomTopicsListView(
-                        topics:
-                            BlocProvider.of<LoginCubit>(context).user!.topics!),
-                  ),
+                  CustomTopicsListView(
+                      topics:
+                          BlocProvider.of<LoginCubit>(context).user!.topics!),
                 ],
               ));
         }

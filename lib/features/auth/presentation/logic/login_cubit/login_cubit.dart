@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intellichat/features/auth/models/user_model/user.dart'
     as UserModel;
@@ -58,16 +59,20 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginFetchUserLoading());
     var response =
         await authRepoImplementation.fetchUser(firebaseUser: firebaseUser);
-    response.when(success: (user) {
-      this.user = user;
-      emit(LoginFetchUserSuccess());
-    }, failure: (FirebaseExceptions firebaseExceptions) {
-      emit(
-        LoginFetchUserFailure(
-          errorMessage: FirebaseExceptions.getErrorMessage(firebaseExceptions),
-        ),
-      );
-    });
+    response.when(
+      success: (user) {
+        this.user = user;
+        emit(LoginFetchUserSuccess());
+      },
+      failure: (FirebaseExceptions firebaseExceptions) {
+        emit(
+          LoginFetchUserFailure(
+            errorMessage:
+                FirebaseExceptions.getErrorMessage(firebaseExceptions),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> signOut() async {

@@ -34,17 +34,18 @@ class _ChatViewState extends State<ChatView> {
         ),
       ),
       child: Scaffold(
+        backgroundColor: Colors.transparent,
+        drawer: const Drawer(
+          child: DrawerBody(),
+        ),
+        appBar: AppBar(
+          centerTitle: true,
           backgroundColor: Colors.transparent,
-          drawer: const Drawer(
-            child: DrawerBody(),
-          ),
-          appBar: AppBar(
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            title: const Text("Intelli-Chat"),
-          ),
-          body: const ChatViewBody()),
+          elevation: 0,
+          title: const Text("Intelli-Chat"),
+        ),
+        body: const ChatViewBody(),
+      ),
     );
   }
 }

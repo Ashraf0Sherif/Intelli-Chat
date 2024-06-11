@@ -10,6 +10,7 @@ part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   final ChatRepoImplementation chatRepoImplementation;
+  int currentTopicIndex = 0;
 
   ChatCubit(this.chatRepoImplementation) : super(ChatInitial());
 
@@ -67,5 +68,15 @@ class ChatCubit extends Cubit<ChatState> {
         emit(ChatSendMessageFailure());
       },
     );
+  }
+
+  void changeTopic(int currentTopicIndex) {
+    emit(ChatFetchMessagesLoading());
+    try {
+      this.currentTopicIndex = currentTopicIndex;
+      emit(ChatFetchMessagesSuccess());
+    } catch (error) {
+      emit(ChatFetchMessagesFailure());
+    }
   }
 }

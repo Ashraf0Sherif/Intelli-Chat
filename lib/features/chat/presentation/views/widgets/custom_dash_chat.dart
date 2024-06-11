@@ -5,16 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intellichat/core/utils/widgets/my_behavior.dart';
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
-import 'package:intellichat/features/chat/presentation/data/models/topic_model/topic.dart';
 import 'package:intellichat/features/chat/presentation/logic/chat_cubit/chat_cubit.dart';
-import 'package:intellichat/features/chat/presentation/views/widgets/not_logged_in.dart';
+import 'package:intellichat/features/chat/presentation/views/widgets/welcome_widget.dart';
 
 import '../../../../../constants.dart';
 
 class CustomDashChat extends StatefulWidget {
-  const CustomDashChat({super.key, required this.topic});
-
-  final Topic? topic;
+  const CustomDashChat({super.key});
 
   @override
   State<CustomDashChat> createState() => _CustomDashChatState();
@@ -52,6 +49,8 @@ class _CustomDashChatState extends State<CustomDashChat> {
       behavior: MyBehavior(),
       child: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) {
+          int currentIndex =
+              BlocProvider.of<ChatCubit>(context).currentTopicIndex;
           return Column(
             children: [
               if (_messages.isEmpty) const Expanded(child: WelcomeWidget()),
@@ -103,8 +102,7 @@ class _CustomDashChatState extends State<CustomDashChat> {
                         chatMessage: chatMessage,
                         topicID: BlocProvider.of<LoginCubit>(context)
                             .user!
-                            .topics!
-                            .last
+                            .topics![currentIndex]
                             .id!);
                   },
                   messages: _messages,

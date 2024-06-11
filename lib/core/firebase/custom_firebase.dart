@@ -95,11 +95,9 @@ class CustomFirebase {
           String topicId = doc.id;
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-          // Fetch messages for the topic
           List<Message> messages =
               await getMessagesForTopic(firebaseUser.uid, topicId);
 
-          // Parse the createdTime field from Firestore, with null safety
           Timestamp? createdTimeStamp = data['createdAt'] as Timestamp?;
           DateTime createdAt =
               createdTimeStamp?.toDate() ?? DateTime(1970, 1, 1);
@@ -175,16 +173,23 @@ class CustomFirebase {
   }
 
   Future<void> addFirstTopic(User firebaseUser) async {
-    await FirebaseFirestore.instance
+    QuerySnapshot topicsSnapshot = await FirebaseFirestore.instance
         .collection(kUserCollection)
         .doc(firebaseUser.uid)
         .collection(kTopicsCollection)
-        .add(
-      {
-        "title": "Your first topic",
-        'createdAt': DateTime.now(),
-      },
-    );
+        .get();
+    if (topicsSnapshot.docs.isEmpty) {
+      await FirebaseFirestore.instance
+          .collection(kUserCollection)
+          .doc(firebaseUser.uid)
+          .collection(kTopicsCollection)
+          .add(
+        {
+          "title": "Your first topic",
+          'createdAt': DateTime.now(),
+        },
+      );
+    }
   }
 
   Future<void> resetPassword({required String email}) async {
