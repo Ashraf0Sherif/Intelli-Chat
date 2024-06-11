@@ -32,8 +32,11 @@ class ChatSendMessageLoading extends ChatState {}
 class ChatSendMessageSuccess extends ChatState {}
 
 class ChatSendMessageFailure extends ChatState {}
+
 class ChatFetchMessagesFailure extends ChatState {}
+
 class ChatFetchMessagesLoading extends ChatState {}
+
 class ChatFetchMessagesSuccess extends ChatState {}
 
 class ChatSuccess extends ChatState {
