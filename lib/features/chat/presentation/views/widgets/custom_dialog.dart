@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intellichat/core/utils/widgets/show_snack_bar.dart';
 
 import '../../../../../constants.dart';
 import '../../../../auth/presentation/logic/login_cubit/login_cubit.dart';
@@ -19,6 +20,8 @@ class CustomCreateAlertDialog extends StatefulWidget {
 
 class _CustomCreateAlertDialogState extends State<CustomCreateAlertDialog> {
   final TextEditingController _controller = TextEditingController();
+  final GlobalKey<FormState> _dialogFormKey = GlobalKey();
+  AutovalidateMode dialogAutovalidateMode = AutovalidateMode.disabled;
 
   void _addTopic() {
     BlocProvider.of<ChatCubit>(context).createTopic(
@@ -30,28 +33,50 @@ class _CustomCreateAlertDialogState extends State<CustomCreateAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ChatCubit,ChatState>(
+    return BlocListener<ChatCubit, ChatState>(
       listener: (context, state) {
-        if(state is ChatNewChatSuccess){
+        if (state is ChatNewChatSuccess) {
           Navigator.of(context).pop();
         }
       },
-      child: AlertDialog(
-        backgroundColor: kPrimaryColor,
-        title: const Text('Enter topic title'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              _addTopic();
-            },
-            child: const Text(
-              "Submit",
-              style: TextStyle(color: Colors.white),
-            ),
-          )
-        ],
-        content: CustomTextFormField(
-            label: 'label', onChanged: (text) {}, controller: _controller),
+      child: Form(
+        key: _dialogFormKey,
+        autovalidateMode: dialogAutovalidateMode,
+        child: AlertDialog(
+          backgroundColor: kPrimaryColor,
+          title: const Text('Enter topic title'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (_dialogFormKey.currentState!.validate()) {
+                  if (BlocProvider.of<LoginCubit>(context).networkConnection) {
+                    _addTopic();
+                  } else {
+                    Navigator.of(context).pop();
+                    showSnackBar(context, message: kNoInternetMessage);
+                  }
+                } else {
+                  dialogAutovalidateMode = AutovalidateMode.always;
+                  setState(() {});
+                }
+              },
+              child: const Text(
+                "Submit",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ],
+          content: CustomTextFormField(
+              label: 'label',
+              onChanged: (text) {},
+              controller: _controller,
+              validator: (value) {
+                if (value?.isEmpty ?? true) {
+                  return "Field is required";
+                }
+                return null;
+              }),
+        ),
       ),
     );
   }

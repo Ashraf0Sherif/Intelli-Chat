@@ -49,7 +49,12 @@ class _CustomRemoveAlertDialogState extends State<CustomRemoveAlertDialog> {
                   showSnackBar(context,
                       message: "You should have at least one topic");
                 } else {
-                  _removeChat();
+                  if (BlocProvider.of<LoginCubit>(context).networkConnection) {
+                    _removeChat();
+                  } else {
+                    Navigator.of(context).pop();
+                    showSnackBar(context, message: kNoInternetMessage);
+                  }
                 }
               },
               child: const Text("YES")),

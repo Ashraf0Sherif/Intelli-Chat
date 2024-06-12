@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,8 +34,31 @@ void main() async {
   ));
 }
 
-class IntelliChat extends StatelessWidget {
+class IntelliChat extends StatefulWidget {
   const IntelliChat({super.key});
+
+  @override
+  State<IntelliChat> createState() => _IntelliChatState();
+}
+
+class _IntelliChatState extends State<IntelliChat> {
+  @override
+  void initState() {
+    super.initState();
+    _checkConnectivity();
+    Connectivity().onConnectivityChanged.listen(
+      (ConnectivityResult result) {
+        BlocProvider.of<LoginCubit>(context).networkConnection =
+            result != ConnectivityResult.none;
+      },
+    );
+  }
+
+  void _checkConnectivity() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    BlocProvider.of<LoginCubit>(context).networkConnection =
+        connectivityResult != ConnectivityResult.none;
+  }
 
   @override
   Widget build(BuildContext context) {

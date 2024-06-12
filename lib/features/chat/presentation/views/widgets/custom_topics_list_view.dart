@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
 
 import '../../../../../constants.dart';
+import '../../../../../core/utils/widgets/show_snack_bar.dart';
 import '../../data/models/topic_model/topic.dart';
 import '../../logic/chat_cubit/chat_cubit.dart';
 import 'custom_remove_dialog.dart';
@@ -39,10 +41,17 @@ class _CustomTopicsListViewState extends State<CustomTopicsListView> {
             );
           },
           onTap: () {
-            setState(() {
-              this.index = index;
-              BlocProvider.of<ChatCubit>(context).changeTopic(index);
-            });
+            if (BlocProvider.of<LoginCubit>(context).networkConnection) {
+              setState(
+                () {
+                  this.index = index;
+                  BlocProvider.of<ChatCubit>(context).changeTopic(index);
+                },
+              );
+            } else {
+              Navigator.of(context).pop();
+              showSnackBar(context, message: kNoInternetMessage);
+            }
           },
           child: Container(
             decoration: BoxDecoration(
@@ -74,5 +83,3 @@ class _CustomTopicsListViewState extends State<CustomTopicsListView> {
     );
   }
 }
-
-

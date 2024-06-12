@@ -14,6 +14,7 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepoImplementation authRepoImplementation;
   UserModel.User? user;
+  bool networkConnection = true;
 
   LoginCubit(this.authRepoImplementation) : super(LoginInitial());
 
@@ -54,6 +55,7 @@ class LoginCubit extends Cubit<LoginState> {
       },
     );
   }
+
   Future<void> fetchUser({required User firebaseUser}) async {
     emit(LoginFetchUserLoading());
     var response =

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart'
     as get_transitions;
+
 import '../../../../core/router/app_router.dart';
 import '../../../../core/utils/assets_data.dart';
 import '../../../auth/presentation/logic/login_cubit/login_cubit.dart';
@@ -41,8 +42,8 @@ class _SplashViewBodyState extends State<SplashViewBody> {
 
   @override
   void initState() {
-    _homeNavigation();
     super.initState();
+    _homeNavigation();
   }
 
   @override

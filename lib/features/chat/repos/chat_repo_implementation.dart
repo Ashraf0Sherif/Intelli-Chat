@@ -72,12 +72,11 @@ class ChatRepoImplementation implements ChatRepo {
   Future<FirebaseResult<void>> textGeneration(
       {required User firebaseUser,
       required String topicID,
-      required String prompt}) async {
+      required String prompt,
+      required ChatUser geminiChatBot}) async {
     try {
       final response = await customGemini.textGeneration(
           firebaseUser: firebaseUser, topicID: topicID, prompt: prompt);
-      final ChatUser geminiChatBot =
-          ChatUser(id: 'geminiID', firstName: 'Intelli', lastName: '-Chat');
       ChatMessage chatMessage = ChatMessage(
           user: geminiChatBot, createdAt: DateTime.now(), text: response ?? '');
       await sendMessage(

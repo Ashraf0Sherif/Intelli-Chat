@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intellichat/core/utils/widgets/show_snack_bar.dart';
 
 import '../../../../../constants.dart';
 import '../../../../auth/presentation/logic/login_cubit/login_cubit.dart';
@@ -63,8 +64,13 @@ class _RenameTopicWidgetState extends State<RenameTopicWidget> {
                       MaterialStateProperty.all<Color>(kPrimaryColor)),
               onPressed: () {
                 if (_dialogFormKey.currentState!.validate()) {
-                  _renameTopic(newTitle: _controller.text);
-                  Navigator.of(context).pop();
+                  if (BlocProvider.of<LoginCubit>(context).networkConnection) {
+                    _renameTopic(newTitle: _controller.text);
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).pop();
+                    showSnackBar(context, message: kNoInternetMessage);
+                  }
                 } else {
                   dialogAutovalidateMode = AutovalidateMode.always;
                   setState(() {});

@@ -14,7 +14,6 @@ class ChatCubit extends Cubit<ChatState> {
 
   ChatCubit(this.chatRepoImplementation) : super(ChatInitial());
 
-
   Future<void> createTopic(
       {required User firebaseUser, required String title}) async {
     emit(ChatNewChatLoading());
@@ -81,10 +80,14 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> generateResponse(
       {required User firebaseUser,
       required String topicID,
-      required ChatMessage message}) async {
+      required ChatMessage message,
+      required ChatUser geminiChatBot}) async {
     emit(ChatGeminiLoading());
     var response = await chatRepoImplementation.textGeneration(
-        firebaseUser: firebaseUser, topicID: topicID, prompt: message.text);
+        firebaseUser: firebaseUser,
+        topicID: topicID,
+        prompt: message.text,
+        geminiChatBot: geminiChatBot);
     response.when(
       success: (success) {
         emit(ChatGeminiSuccess());
