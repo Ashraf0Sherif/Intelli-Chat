@@ -14,16 +14,6 @@ class ChatRepoImplementation implements ChatRepo {
   ChatRepoImplementation(this.customGemini, this.customFirebase);
 
   @override
-  Future<String?> textGeneration({required String prompt}) async {
-    try {
-      var response = customGemini.textGeneration(prompt: prompt);
-      return response;
-    } catch (error) {
-      print(error);
-    }
-  }
-
-  @override
   Future<FirebaseResult<void>> sendMessage(
       {required User firebaseUser,
       required String topicID,
@@ -32,7 +22,6 @@ class ChatRepoImplementation implements ChatRepo {
       await customFirebase.sendMessage(firebaseUser, topicID, message);
       return const FirebaseResult.success(null);
     } catch (error) {
-      print(error.toString());
       return FirebaseResult.failure(
           FirebaseExceptions.getFirebaseException(error));
     }
@@ -72,6 +61,27 @@ class ChatRepoImplementation implements ChatRepo {
     try {
       await customFirebase.renameTopic(
           firebaseUser: firebaseUser, topicID: topicID, newTitle: newTitle);
+      return const FirebaseResult.success(null);
+    } catch (error) {
+      return FirebaseResult.failure(
+          FirebaseExceptions.getFirebaseException(error));
+    }
+  }
+
+  @override
+  Future<FirebaseResult<void>> textGeneration(
+      {required User firebaseUser,
+      required String topicID,
+      required String prompt}) async {
+    try {
+      final response = await customGemini.textGeneration(
+          firebaseUser: firebaseUser, topicID: topicID, prompt: prompt);
+      final ChatUser geminiChatBot =
+          ChatUser(id: 'geminiID', firstName: 'Intelli', lastName: '-Chat');
+      ChatMessage chatMessage = ChatMessage(
+          user: geminiChatBot, createdAt: DateTime.now(), text: response ?? '');
+      await sendMessage(
+          firebaseUser: firebaseUser, topicID: topicID, message: chatMessage);
       return const FirebaseResult.success(null);
     } catch (error) {
       return FirebaseResult.failure(

@@ -4,7 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../core/firebase/firebase_result.dart';
 
 abstract class ChatRepo {
-  Future<String?> textGeneration({required String prompt});
+  Future<FirebaseResult<void>> textGeneration(
+      {required User firebaseUser,
+      required String topicID,
+      required String prompt});
 
   Future<FirebaseResult<void>> createTopic(
       {required User firebaseUser, required String title});

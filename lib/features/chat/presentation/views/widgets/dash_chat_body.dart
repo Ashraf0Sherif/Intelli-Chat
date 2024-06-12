@@ -20,14 +20,10 @@ class DashChatBody extends StatefulWidget {
 
 class _DashChatBodyState extends State<DashChatBody> {
   final ChatUser _currernUser = ChatUser(
-      id: FirebaseAuth.instance.currentUser == null
-          ? '1'
-          : FirebaseAuth.instance.currentUser!.uid,
-      firstName: FirebaseAuth.instance.currentUser == null
-          ? ''
-          : FirebaseAuth.instance.currentUser!.displayName);
+      id: FirebaseAuth.instance.currentUser!.uid,
+      firstName: FirebaseAuth.instance.currentUser!.displayName);
   final ChatUser _geminiChatBot =
-      ChatUser(id: '2', firstName: 'Intelli', lastName: '-Chat');
+      ChatUser(id: '2', firstName: 'IntelliChat');
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _messageController = TextEditingController();
 
@@ -49,6 +45,7 @@ class _DashChatBodyState extends State<DashChatBody> {
                     .topics![currentIndex]
                     .id)
                 .collection(kMessagesCollection)
+                .orderBy('createdAt', descending: true)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -56,9 +53,13 @@ class _DashChatBodyState extends State<DashChatBody> {
                 for (var doc in snapshot.data!.docs) {
                   Timestamp timestamp = doc['createdAt'] as Timestamp;
                   DateTime dateTime = timestamp.toDate();
+                  print(doc['userID'] == FirebaseAuth.instance.currentUser!);
                   _messages.add(
                     ChatMessage(
-                      user: _currernUser,
+                      user: doc['userID'] ==
+                              FirebaseAuth.instance.currentUser!.uid
+                          ? _currernUser
+                          : _geminiChatBot,
                       createdAt: dateTime,
                       text: doc['message'],
                     ),
@@ -153,8 +154,12 @@ class _DashChatBodyState extends State<DashChatBody> {
   }
 
   void getChatResponse(
-      {required ChatMessage chatMessage, required String topicID}) {
-    BlocProvider.of<ChatCubit>(context).sendMessage(
+      {required ChatMessage chatMessage, required String topicID}) async {
+    await BlocProvider.of<ChatCubit>(context).sendMessage(
+        firebaseUser: FirebaseAuth.instance.currentUser!,
+        topicID: topicID,
+        message: chatMessage);
+    await BlocProvider.of<ChatCubit>(context).generateResponse(
         firebaseUser: FirebaseAuth.instance.currentUser!,
         topicID: topicID,
         message: chatMessage);

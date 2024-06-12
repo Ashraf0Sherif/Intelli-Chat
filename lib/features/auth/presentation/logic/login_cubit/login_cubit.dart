@@ -54,7 +54,6 @@ class LoginCubit extends Cubit<LoginState> {
       },
     );
   }
-
   Future<void> fetchUser({required User firebaseUser}) async {
     emit(LoginFetchUserLoading());
     var response =

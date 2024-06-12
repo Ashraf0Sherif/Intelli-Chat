@@ -49,6 +49,12 @@ class ChatFetchMessagesLoading extends ChatState {}
 
 class ChatFetchMessagesSuccess extends ChatState {}
 
+class ChatGeminiLoading extends ChatState {}
+
+class ChatGeminiFailure extends ChatState {}
+
+class ChatGeminiSuccess extends ChatState {}
+
 class ChatSuccess extends ChatState {
   final String geminiResponse;
 

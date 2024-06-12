@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart'
     as get_transitions;
+import 'package:intellichat/core/utils/widgets/custom_divider.dart';
 import 'package:rive/rive.dart';
 
 import '../../../../../constants.dart';
@@ -138,9 +139,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                     const SizedBox(
                       height: 20,
                     ),
-                    const Divider(
-                      thickness: 1,
-                    ),
+                    const CustomDivider(text: 'Or Continue with'),
                     const SizedBox(
                       height: 10,
                     ),
@@ -151,7 +150,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                               .loginUsingGoogle();
                         },
                         icon: FontAwesomeIcons.google,
-                        text: "Continue With Google",
+                        text: "Google",
                       ),
                     ),
                     const SizedBox(

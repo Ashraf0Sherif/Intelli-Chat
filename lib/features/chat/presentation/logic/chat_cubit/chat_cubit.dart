@@ -14,15 +14,6 @@ class ChatCubit extends Cubit<ChatState> {
 
   ChatCubit(this.chatRepoImplementation) : super(ChatInitial());
 
-  Future<void> textGeneration({required String prompt}) async {
-    emit(ChatLoading());
-    var response = await chatRepoImplementation.textGeneration(prompt: prompt);
-    if (response == null) {
-      emit(ChatFailure("errorMessage"));
-    } else {
-      emit(ChatSuccess("geminiResponse"));
-    }
-  }
 
   Future<void> createTopic(
       {required User firebaseUser, required String title}) async {
@@ -83,6 +74,23 @@ class ChatCubit extends Cubit<ChatState> {
       },
       failure: (error) {
         emit(ChatSendMessageFailure());
+      },
+    );
+  }
+
+  Future<void> generateResponse(
+      {required User firebaseUser,
+      required String topicID,
+      required ChatMessage message}) async {
+    emit(ChatGeminiLoading());
+    var response = await chatRepoImplementation.textGeneration(
+        firebaseUser: firebaseUser, topicID: topicID, prompt: message.text);
+    response.when(
+      success: (success) {
+        emit(ChatGeminiSuccess());
+      },
+      failure: (error) {
+        emit(ChatGeminiFailure());
       },
     );
   }

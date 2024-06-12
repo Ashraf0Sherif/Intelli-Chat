@@ -35,9 +35,12 @@ class LoginMethod extends StatelessWidget {
               SizedBox(
                 width: icon == null ? 0 : 20,
               ),
-              Text(
-                text,
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
+              Flexible(
+                child: Text(
+                  text,
+                  style: GoogleFonts.montserrat(fontWeight: FontWeight.w500),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
