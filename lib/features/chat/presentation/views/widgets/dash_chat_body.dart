@@ -4,8 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intellichat/core/utils/assets_data.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/welcome_widget.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../../../constants.dart';
 import '../../../../../core/utils/widgets/my_behavior.dart';
 import '../../../../auth/presentation/logic/login_cubit/login_cubit.dart';
@@ -22,10 +23,15 @@ class _DashChatBodyState extends State<DashChatBody> {
   final ChatUser _currernUser = ChatUser(
       id: FirebaseAuth.instance.currentUser!.uid,
       firstName: FirebaseAuth.instance.currentUser!.displayName);
-  final ChatUser _geminiChatBot =
-      ChatUser(id: '2', firstName: 'IntelliChat');
+  final ChatUser _geminiChatBot = ChatUser(
+    id: '2',
+    firstName: 'IntelliChat',
+    profileImage: AssetsData.kRobotPic,
+  );
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _messageController = TextEditingController();
+  String lastCurrentUserMessage = '';
+  List<ChatUser> typingUsers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +59,6 @@ class _DashChatBodyState extends State<DashChatBody> {
                 for (var doc in snapshot.data!.docs) {
                   Timestamp timestamp = doc['createdAt'] as Timestamp;
                   DateTime dateTime = timestamp.toDate();
-                  print(doc['userID'] == FirebaseAuth.instance.currentUser!);
                   _messages.add(
                     ChatMessage(
                       user: doc['userID'] ==
@@ -71,13 +76,14 @@ class _DashChatBodyState extends State<DashChatBody> {
                       const Expanded(child: WelcomeWidget()),
                     Expanded(
                       child: DashChat(
+                        typingUsers: typingUsers,
                         messageListOptions: const MessageListOptions(
                           showDateSeparator: false,
                         ),
                         messageOptions: const MessageOptions(
                           containerColor: kSecondaryColor,
                           textColor: Colors.white,
-                          currentUserTextColor: kPrimaryColor,
+                          currentUserTextColor: Colors.white,
                           currentUserContainerColor: kSecondaryColor2,
                         ),
                         inputOptions: InputOptions(
@@ -127,10 +133,8 @@ class _DashChatBodyState extends State<DashChatBody> {
                   ],
                 );
               } else {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: kPrimaryColor,
-                  ),
+                return const SpinKitWave(
+                  color: kPrimaryColor,
                 );
               }
             },
@@ -140,6 +144,11 @@ class _DashChatBodyState extends State<DashChatBody> {
           if (state is ChatNewChatSuccess ||
               state is ChatFetchMessagesSuccess) {
             setState(() {});
+          }
+          if (state is ChatGeminiLoading) {
+            typingUsers.add(_geminiChatBot);
+          } else {
+            typingUsers.clear();
           }
         },
       ),
