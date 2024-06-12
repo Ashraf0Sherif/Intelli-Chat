@@ -1,29 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intellichat/constants.dart';
-import 'package:intellichat/core/utils/widgets/my_behavior.dart';
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
+import 'package:intellichat/features/chat/presentation/views/widgets/success_drawer_list_view.dart';
 
-import '../../../../auth/presentation/views/widgets/custom_text_form_field.dart';
-import 'custom_dialog.dart';
-import 'custom_topics_list_view.dart';
-
-class DrawerListView extends StatefulWidget {
+class DrawerListView extends StatelessWidget {
   const DrawerListView({super.key});
-
-  @override
-  State<DrawerListView> createState() => _DrawerListViewState();
-}
-
-class _DrawerListViewState extends State<DrawerListView> {
-  final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,46 +18,11 @@ class _DrawerListViewState extends State<DrawerListView> {
             ),
           );
         } else {
-          return ScrollConfiguration(
-              behavior: MyBehavior(),
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  CustomTextFormField(
-                    label: 'Search chat history',
-                    onChanged: (text) {},
-                    controller: _searchController,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text("Recent Chats"),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const CustomCreateAlertDialog();
-                            },
-                          );
-                        },
-                        icon: const Icon(
-                          FontAwesomeIcons.message,
-                          size: 18,
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  CustomTopicsListView(
-                      topics:
-                          BlocProvider.of<LoginCubit>(context).user!.topics!),
-                ],
-              ));
+          return const SuccessDrawerListView();
         }
       },
     );
   }
 }
+
+

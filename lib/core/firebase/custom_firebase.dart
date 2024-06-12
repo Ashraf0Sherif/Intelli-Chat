@@ -155,6 +155,22 @@ class CustomFirebase {
         .delete();
   }
 
+  Future<void> renameTopic(
+      {required User firebaseUser,
+      required String topicID,
+      required String newTitle}) async {
+    await FirebaseFirestore.instance
+        .collection(kUserCollection)
+        .doc(firebaseUser.uid)
+        .collection(kTopicsCollection)
+        .doc(topicID)
+        .update(
+      {
+        'title': newTitle,
+      },
+    );
+  }
+
   Future<void> sendMessage(
       User firebaseUser, String topicID, ChatMessage message) async {
     await FirebaseFirestore.instance

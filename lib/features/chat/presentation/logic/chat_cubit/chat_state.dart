@@ -7,6 +7,16 @@ class ChatInitial extends ChatState {}
 
 class ChatLoading extends ChatState {}
 
+class ChatRenameTopicLoading extends ChatState {}
+
+class ChatRenameTopicFailure extends ChatState {
+  final String errorMessage;
+
+  ChatRenameTopicFailure(this.errorMessage);
+}
+
+class ChatRenameTopicSuccess extends ChatState {}
+
 class ChatRemoveLoading extends ChatState {}
 
 class ChatRemoveFailure extends ChatState {

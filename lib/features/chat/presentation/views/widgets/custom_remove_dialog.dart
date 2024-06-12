@@ -7,6 +7,7 @@ import '../../../../../core/utils/widgets/show_snack_bar.dart';
 import '../../../../auth/presentation/logic/login_cubit/login_cubit.dart';
 import '../../data/models/topic_model/topic.dart';
 import '../../logic/chat_cubit/chat_cubit.dart';
+import 'custom_rename_dialog.dart';
 
 class CustomRemoveAlertDialog extends StatefulWidget {
   const CustomRemoveAlertDialog({super.key, required this.topic});
@@ -20,7 +21,7 @@ class CustomRemoveAlertDialog extends StatefulWidget {
 
 class _CustomRemoveAlertDialogState extends State<CustomRemoveAlertDialog> {
   void _removeChat() {
-    BlocProvider.of<ChatCubit>(context).removeChat(
+    BlocProvider.of<ChatCubit>(context).removeTopic(
         firebaseUser: FirebaseAuth.instance.currentUser!,
         topicID: widget.topic.id!);
     BlocProvider.of<LoginCubit>(context)
@@ -53,7 +54,17 @@ class _CustomRemoveAlertDialogState extends State<CustomRemoveAlertDialog> {
               },
               child: const Text("YES")),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+              showDialog(
+                context: (context),
+                builder: (context) {
+                  return RenameTopicWidget(
+                    topicID: widget.topic.id!,
+                  );
+                },
+              );
+            },
             child: const Text("Rename"),
           )
         ],

@@ -63,4 +63,19 @@ class ChatRepoImplementation implements ChatRepo {
           FirebaseExceptions.getFirebaseException(error));
     }
   }
+
+  @override
+  Future<FirebaseResult<void>> renameTopic(
+      {required User firebaseUser,
+      required String topicID,
+      required String newTitle}) async {
+    try {
+      await customFirebase.renameTopic(
+          firebaseUser: firebaseUser, topicID: topicID, newTitle: newTitle);
+      return const FirebaseResult.success(null);
+    } catch (error) {
+      return FirebaseResult.failure(
+          FirebaseExceptions.getFirebaseException(error));
+    }
+  }
 }

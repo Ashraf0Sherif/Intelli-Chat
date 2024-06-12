@@ -41,7 +41,22 @@ class ChatCubit extends Cubit<ChatState> {
     );
   }
 
-  Future<void> removeChat(
+  Future<void> renameTopic(
+      {required User firebaseUser,
+      required String topicID,
+      required String newTitle}) async {
+    emit(ChatRenameTopicLoading());
+    var response = await chatRepoImplementation.renameTopic(
+        firebaseUser: firebaseUser, topicID: topicID, newTitle: newTitle);
+    response.when(success: (success) {
+      emit(ChatRenameTopicSuccess());
+    }, failure: (FirebaseExceptions firebaseExceptions) {
+      emit(ChatRenameTopicFailure(
+          FirebaseExceptions.getErrorMessage(firebaseExceptions)));
+    });
+  }
+
+  Future<void> removeTopic(
       {required User firebaseUser, required String topicID}) async {
     emit(ChatRemoveLoading());
     var response = await chatRepoImplementation.removeTopic(

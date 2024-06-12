@@ -3,7 +3,7 @@ import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart'
-as get_transitions;
+    as get_transitions;
 import 'package:rive/rive.dart';
 
 import '../../../../../constants.dart';
@@ -15,6 +15,7 @@ import '../../../../../core/utils/widgets/my_behavior.dart';
 import '../../logic/login_cubit/login_cubit.dart';
 import 'custom_password_text_form_field.dart';
 import 'custom_text_form_field.dart';
+import 'forgot_password_widget.dart';
 
 class LoginViewBody extends StatefulWidget {
   const LoginViewBody({super.key});
@@ -54,7 +55,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
             ),
             child: Padding(
               padding:
-              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
               child: ScrollConfiguration(
                 behavior: MyBehavior(),
                 child: ListView(
@@ -104,7 +105,14 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showDialog(
+                                context: (context),
+                                builder: (context) {
+                                  return const ForgotPasswordWidget();
+                                },
+                              );
+                            },
                             child: const Text("Reset Password")),
                       ],
                     ),
@@ -118,8 +126,8 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                           if (_formKey.currentState!.validate()) {
                             BlocProvider.of<LoginCubit>(context)
                                 .loginUsingEmailAndPassword(
-                                email: _emailController.text,
-                                password: _passwordController.text);
+                                    email: _emailController.text,
+                                    password: _passwordController.text);
                           } else {
                             autoValidateMode = AutovalidateMode.always;
                             setState(() {});

@@ -12,6 +12,11 @@ abstract class ChatRepo {
   Future<FirebaseResult<void>> removeTopic(
       {required User firebaseUser, required String topicID});
 
+  Future<FirebaseResult<void>> renameTopic(
+      {required User firebaseUser,
+      required String topicID,
+      required String newTitle});
+
   Future<FirebaseResult<void>> sendMessage(
       {required User firebaseUser,
       required String topicID,
