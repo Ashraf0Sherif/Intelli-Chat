@@ -5,7 +5,6 @@ import 'package:intellichat/core/utils/widgets/show_snack_bar.dart';
 
 import '../../../../../constants.dart';
 import '../../../../auth/presentation/logic/login_cubit/login_cubit.dart';
-import '../../../../auth/presentation/views/widgets/custom_text_form_field.dart';
 import '../../logic/chat_cubit/chat_cubit.dart';
 
 class CustomCreateAlertDialog extends StatefulWidget {
@@ -66,16 +65,24 @@ class _CustomCreateAlertDialogState extends State<CustomCreateAlertDialog> {
               ),
             )
           ],
-          content: CustomTextFormField(
-              label: 'label',
-              onChanged: (text) {},
-              controller: _controller,
-              validator: (value) {
-                if (value?.isEmpty ?? true) {
-                  return "Field is required";
-                }
-                return null;
-              }),
+          content: TextFormField(
+            controller: _controller,
+            cursorColor: kSecondaryColor2,
+            validator: (value) {
+              if (value?.isEmpty ?? true) {
+                return "Field is required";
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: kSecondaryColor,
+                ),
+              ),
+              hintText: "title",
+            ),
+          ),
         ),
       ),
     );

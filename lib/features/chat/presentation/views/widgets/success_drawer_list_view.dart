@@ -27,7 +27,9 @@ class _SuccessDrawerListViewState extends State<SuccessDrawerListView> {
         children: [
           CustomTextFormField(
             label: 'Search chat history',
-            onChanged: (text) {},
+            onChanged: (text) {
+              BlocProvider.of<LoginCubit>(context).searchTopic(text);
+            },
             controller: _searchController,
           ),
           const SizedBox(height: 10),
@@ -53,8 +55,7 @@ class _SuccessDrawerListViewState extends State<SuccessDrawerListView> {
             ],
           ),
           const SizedBox(height: 10),
-          CustomTopicsListView(
-              topics: BlocProvider.of<LoginCubit>(context).user!.topics!),
+          const CustomTopicsListView(),
         ],
       ),
     );

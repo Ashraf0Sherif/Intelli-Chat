@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../core/firebase/firebase_exceptions.dart';
@@ -81,13 +82,15 @@ class ChatCubit extends Cubit<ChatState> {
       {required User firebaseUser,
       required String topicID,
       required ChatMessage message,
-      required ChatUser geminiChatBot}) async {
+      required ChatUser geminiChatBot,
+      required List<Content> chatHistory}) async {
     emit(ChatGeminiLoading());
     var response = await chatRepoImplementation.textGeneration(
         firebaseUser: firebaseUser,
         topicID: topicID,
         prompt: message.text,
-        geminiChatBot: geminiChatBot);
+        geminiChatBot: geminiChatBot,
+        chatHistory: chatHistory);
     response.when(
       success: (success) {
         emit(ChatGeminiSuccess());

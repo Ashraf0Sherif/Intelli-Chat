@@ -1,11 +1,14 @@
+
+
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intellichat/core/firebase/firebase_result.dart';
-import 'package:intellichat/core/gemini/custom_gemini.dart';
-import 'package:intellichat/features/chat/repos/chat_repo.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 import '../../../core/firebase/custom_firebase.dart';
 import '../../../core/firebase/firebase_exceptions.dart';
+import '../../../core/firebase/firebase_result.dart';
+import '../../../core/gemini/custom_gemini.dart';
+import 'chat_repo.dart';
 
 class ChatRepoImplementation implements ChatRepo {
   final CustomGemini customGemini;
@@ -73,10 +76,14 @@ class ChatRepoImplementation implements ChatRepo {
       {required User firebaseUser,
       required String topicID,
       required String prompt,
-      required ChatUser geminiChatBot}) async {
+      required ChatUser geminiChatBot,
+      required List<Content> chatHistory}) async {
     try {
       final response = await customGemini.textGeneration(
-          firebaseUser: firebaseUser, topicID: topicID, prompt: prompt);
+          firebaseUser: firebaseUser,
+          topicID: topicID,
+          prompt: prompt,
+          chatHistory: chatHistory);
       ChatMessage chatMessage = ChatMessage(
           user: geminiChatBot, createdAt: DateTime.now(), text: response ?? '');
       await sendMessage(

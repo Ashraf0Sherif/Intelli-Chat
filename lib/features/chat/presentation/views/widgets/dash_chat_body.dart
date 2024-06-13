@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:intellichat/core/utils/assets_data.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/welcome_widget.dart';
 
@@ -74,8 +75,7 @@ class _DashChatBodyState extends State<DashChatBody> {
                 }
                 return Stack(
                   children: [
-                    if (_messages.isEmpty)
-                      const WelcomeWidget(),
+                    if (_messages.isEmpty) const WelcomeWidget(),
                     DashChat(
                       typingUsers: typingUsers,
                       messageListOptions: const MessageListOptions(
@@ -130,8 +130,7 @@ class _DashChatBodyState extends State<DashChatBody> {
                                 .id!,
                           );
                         } else {
-                          showSnackBar(context,
-                              message: kNoInternetMessage);
+                          showSnackBar(context, message: kNoInternetMessage);
                         }
                       },
                       messages: _messages,
@@ -174,10 +173,19 @@ class _DashChatBodyState extends State<DashChatBody> {
         firebaseUser: FirebaseAuth.instance.currentUser!,
         topicID: topicID,
         message: chatMessage);
+    List<Content> chatHistory = [];
+    for (var message in _messages.reversed) {
+      if (message.user == _currernUser) {
+        chatHistory.add(Content.text(message.text));
+      } else {
+        chatHistory.add(Content.model([TextPart(message.text)]));
+      }
+    }
     await BlocProvider.of<ChatCubit>(context).generateResponse(
         firebaseUser: FirebaseAuth.instance.currentUser!,
         topicID: topicID,
         message: chatMessage,
-        geminiChatBot: _geminiChatBot);
+        geminiChatBot: _geminiChatBot,
+        chatHistory: chatHistory);
   }
 }

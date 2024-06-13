@@ -6,7 +6,6 @@ import 'package:intellichat/constants.dart';
 import 'package:intellichat/features/auth/models/user_model/user.dart'
     as UserModel;
 
-import '../../features/chat/presentation/data/models/message_model/message.dart';
 import '../../features/chat/presentation/data/models/topic_model/topic.dart';
 
 class CustomFirebase {
@@ -94,16 +93,12 @@ class CustomFirebase {
         (doc) async {
           String topicId = doc.id;
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
-          List<Message> messages =
-              await getMessagesForTopic(firebaseUser.uid, topicId);
           Timestamp? createdTimeStamp = data['createdAt'] as Timestamp?;
           DateTime createdAt =
               createdTimeStamp?.toDate() ?? DateTime(1970, 1, 1);
           return Topic(
             id: topicId,
             title: data['title'] as String?,
-            messages: messages,
             createdAt: createdAt,
           );
         },
@@ -113,23 +108,6 @@ class CustomFirebase {
     return topics;
   }
 
-  Future<List<Message>> getMessagesForTopic(
-      String userId, String topicId) async {
-    QuerySnapshot messagesSnapshot = await FirebaseFirestore.instance
-        .collection(kUserCollection)
-        .doc(userId)
-        .collection(kTopicsCollection)
-        .doc(topicId)
-        .collection(kMessagesCollection)
-        .get();
-    List<Message> messages = messagesSnapshot.docs.map(
-      (doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        return Message.fromJson(data);
-      },
-    ).toList();
-    return messages;
-  }
 
   Future<void> createTopic(
       {required User firebaseUser, required String title}) async {

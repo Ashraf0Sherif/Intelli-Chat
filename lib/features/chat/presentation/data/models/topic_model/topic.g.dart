@@ -8,13 +8,14 @@ part of 'topic.dart';
 
 Topic _$TopicFromJson(Map<String, dynamic> json) => Topic(
       id: json['id'] as String?,
-      messages:
-          (json['messages'] as List<dynamic>?)?.map(Message.fromJson).toList(),
       title: json['title'] as String?,
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$TopicToJson(Topic instance) => <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
-      'messages': instance.messages,
+      'createdAt': instance.createdAt?.toIso8601String(),
     };

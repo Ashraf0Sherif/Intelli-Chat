@@ -4,14 +4,11 @@ import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_c
 
 import '../../../../../constants.dart';
 import '../../../../../core/utils/widgets/show_snack_bar.dart';
-import '../../data/models/topic_model/topic.dart';
 import '../../logic/chat_cubit/chat_cubit.dart';
 import 'custom_remove_dialog.dart';
 
 class CustomTopicsListView extends StatefulWidget {
-  const CustomTopicsListView({super.key, required this.topics});
-
-  final List<Topic> topics;
+  const CustomTopicsListView({super.key});
 
   @override
   State<CustomTopicsListView> createState() => _CustomTopicsListViewState();
@@ -28,15 +25,17 @@ class _CustomTopicsListViewState extends State<CustomTopicsListView> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<LoginCubit,LoginState>(
+  builder: (context, state) {
     return ListView.separated(
-      itemCount: widget.topics.length,
+      itemCount: BlocProvider.of<LoginCubit>(context).user!.topics!.length,
       itemBuilder: (context, index) {
         return InkWell(
           onLongPress: () {
             showDialog(
               context: context,
               builder: (context) {
-                return CustomRemoveAlertDialog(topic: widget.topics[index]);
+                return CustomRemoveAlertDialog(topic: BlocProvider.of<LoginCubit>(context).user!.topics![index]);
               },
             );
           },
@@ -65,7 +64,7 @@ class _CustomTopicsListViewState extends State<CustomTopicsListView> {
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Text(
-                widget.topics[index].title!,
+                BlocProvider.of<LoginCubit>(context).user!.topics![index].title!,
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
@@ -81,5 +80,7 @@ class _CustomTopicsListViewState extends State<CustomTopicsListView> {
         );
       },
     );
+  },
+);
   }
 }

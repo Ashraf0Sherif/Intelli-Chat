@@ -1,7 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../message_model/message.dart';
-
 part 'topic.g.dart';
 
 @JsonSerializable()
@@ -9,9 +7,8 @@ class Topic {
   String? id;
   String? title;
   DateTime? createdAt;
-  List<Message>? messages;
 
-  Topic({this.id, this.messages, this.title,this.createdAt});
+  Topic({this.id, this.title,this.createdAt});
 
   factory Topic.fromJson(json) => _$TopicFromJson(json);
 
@@ -19,7 +16,7 @@ class Topic {
 
   @override
   String toString() {
-    print("topicID : $id \n title : $title \n $messages");
+    print("topicID : $id \n title : $title");
     return super.toString();
   }
 }

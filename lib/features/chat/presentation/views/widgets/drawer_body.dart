@@ -22,6 +22,12 @@ class _DrawerBodyState extends State<DrawerBody> {
   String userName = "guest";
 
   @override
+  void initState() {
+    BlocProvider.of<LoginCubit>(context).searchTopic('');
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
