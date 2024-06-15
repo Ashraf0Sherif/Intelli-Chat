@@ -17,6 +17,7 @@ class LoginCubit extends Cubit<LoginState> {
   UserModel.User? user;
   bool networkConnection = true;
   List<Topic> userTopics = [];
+  String? currentTopicId;
 
   LoginCubit(this.authRepoImplementation) : super(LoginInitial());
 
@@ -66,6 +67,7 @@ class LoginCubit extends Cubit<LoginState> {
       success: (user) {
         this.user = user;
         userTopics = user.topics!;
+        currentTopicId = userTopics.first.id;
         emit(LoginFetchUserSuccess());
       },
       failure: (FirebaseExceptions firebaseExceptions) {
@@ -129,5 +131,10 @@ class LoginCubit extends Cubit<LoginState> {
         LoginFetchUserFailure(errorMessage: 'Check your internet'),
       );
     }
+  }
+
+  void changeTopicId(String topicId) {
+    currentTopicId = topicId;
+    emit(LoginChangeTopicID());
   }
 }

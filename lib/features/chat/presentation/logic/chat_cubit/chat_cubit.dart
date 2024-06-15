@@ -11,7 +11,6 @@ part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   final ChatRepoImplementation chatRepoImplementation;
-  int currentTopicIndex = 0;
 
   ChatCubit(this.chatRepoImplementation) : super(ChatInitial());
 
@@ -22,7 +21,6 @@ class ChatCubit extends Cubit<ChatState> {
         firebaseUser: firebaseUser, title: title);
     response.when(
       success: (success) {
-        currentTopicIndex = 0;
         emit(ChatNewChatSuccess());
       },
       failure: (FirebaseExceptions firebaseExceptions) {
@@ -53,7 +51,6 @@ class ChatCubit extends Cubit<ChatState> {
     var response = await chatRepoImplementation.removeTopic(
         firebaseUser: firebaseUser, topicID: topicID);
     response.when(success: (success) {
-      currentTopicIndex = 0;
       emit(ChatRemoveSuccess());
     }, failure: (FirebaseExceptions firebaseExceptions) {
       emit(ChatRemoveFailure(
@@ -99,15 +96,5 @@ class ChatCubit extends Cubit<ChatState> {
         emit(ChatGeminiFailure());
       },
     );
-  }
-
-  void changeTopic(int currentTopicIndex) {
-    emit(ChatFetchMessagesLoading());
-    try {
-      this.currentTopicIndex = currentTopicIndex;
-      emit(ChatFetchMessagesSuccess());
-    } catch (error) {
-      emit(ChatFetchMessagesFailure());
-    }
   }
 }

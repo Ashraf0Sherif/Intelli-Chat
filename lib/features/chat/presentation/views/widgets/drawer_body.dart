@@ -23,8 +23,6 @@ class DrawerBody extends StatefulWidget {
 }
 
 class _DrawerBodyState extends State<DrawerBody> {
-  String userName = "guest";
-
   @override
   void initState() {
     BlocProvider.of<LoginCubit>(context).searchTopic('');
@@ -41,7 +39,8 @@ class _DrawerBodyState extends State<DrawerBody> {
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: BlocBuilder<LoginCubit, LoginState>(
             builder: (context, state) {
-              if (state is LoginFetchUserSuccess) {
+              if (state is LoginFetchUserSuccess ||
+                  state is LoginChangeTopicID) {
                 return Column(
                   children: [
                     const SizedBox(
@@ -146,7 +145,7 @@ class _CustomUserAvatarState extends State<CustomUserAvatar> {
           BlocProvider.of<LoginCubit>(context).user!.avatarUrl =
               state.avatarUrl;
         }
-        if(state is AvatarChangeLoading){
+        if (state is AvatarChangeLoading) {
           return const Center(
             child: CircularProgressIndicator(
               color: kPrimaryColor,

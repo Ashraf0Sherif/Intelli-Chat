@@ -19,7 +19,6 @@ import 'package:intellichat/simple_bloc_observer.dart';
 import 'constants.dart';
 import 'core/di/dependency_injection.dart';
 import 'features/auth/repos/auth_repo_implementation.dart';
-import 'features/chat/presentation/logic/avatar_cubit/avatar_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -85,12 +84,7 @@ class _IntelliChatState extends State<IntelliChat> {
       debugShowCheckedModeBanner: false,
       home: FirebaseAuth.instance.currentUser == null
           ? const LoginView()
-          : BlocProvider(
-              create: (context) => AvatarCubit(
-                getIt.get<AuthRepoImplementation>(),
-              ),
-              child: const ChatView(),
-            ),
+          : const ChatView(),
     );
   }
 }

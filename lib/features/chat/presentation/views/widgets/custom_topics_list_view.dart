@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
 
 import '../../../../../constants.dart';
-import '../../logic/chat_cubit/chat_cubit.dart';
 import 'custom_remove_dialog.dart';
 
 class CustomTopicsListView extends StatefulWidget {
@@ -14,14 +13,6 @@ class CustomTopicsListView extends StatefulWidget {
 }
 
 class _CustomTopicsListViewState extends State<CustomTopicsListView> {
-  late int index;
-
-  @override
-  void initState() {
-    index = BlocProvider.of<ChatCubit>(context).currentTopicIndex;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
@@ -44,14 +35,22 @@ class _CustomTopicsListViewState extends State<CustomTopicsListView> {
               onTap: () {
                 setState(
                   () {
-                    this.index = index;
-                    BlocProvider.of<ChatCubit>(context).changeTopic(index);
+                    BlocProvider.of<LoginCubit>(context).changeTopicId(
+                      BlocProvider.of<LoginCubit>(context)
+                          .user!
+                          .topics![index]
+                          .id!,
+                    );
                   },
                 );
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: this.index != index
+                  color: BlocProvider.of<LoginCubit>(context).currentTopicId !=
+                          BlocProvider.of<LoginCubit>(context)
+                              .user!
+                              .topics![index]
+                              .id
                       ? Colors.grey.withOpacity(0.2)
                       : kSecondaryColor2,
                   border: Border.all(

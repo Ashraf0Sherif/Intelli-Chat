@@ -8,7 +8,9 @@ import 'package:intellichat/features/chat/presentation/views/widgets/chat_view_b
 import 'package:intellichat/features/chat/presentation/views/widgets/drawer_body.dart';
 
 import '../../../../constants.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/utils/widgets/show_snack_bar.dart';
+import '../../../auth/repos/auth_repo_implementation.dart';
 
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
@@ -27,35 +29,40 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: painting.LinearGradient(
-          colors: [kPrimaryColor, kSecondaryColor],
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-        ),
+    return BlocProvider(
+      create: (context) => AvatarCubit(
+        getIt.get<AuthRepoImplementation>(),
       ),
-      child: BlocListener<AvatarCubit, AvatarState>(
-        listener: (context, state) {
-          if (state is AvatarChangeSuccess) {
-            showSnackBar(context,
-                message: 'Avatar has changed successfully !',
-                backgroundColor: Colors.green.shade400);
-          } else if (state is AvatarChangeFailure) {
-            showSnackBar(context, message: state.errorMessage);
-          }
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            title: const Text("Intelli-Chat"),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: painting.LinearGradient(
+            colors: [kPrimaryColor, kSecondaryColor],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
           ),
-          body: const ChatViewBody(),
-          backgroundColor: Colors.transparent,
-          drawer: const Drawer(
-            child: DrawerBody(),
+        ),
+        child: BlocListener<AvatarCubit, AvatarState>(
+          listener: (context, state) {
+            if (state is AvatarChangeSuccess) {
+              showSnackBar(context,
+                  message: 'Avatar has changed successfully !',
+                  backgroundColor: Colors.green.shade400);
+            } else if (state is AvatarChangeFailure) {
+              showSnackBar(context, message: state.errorMessage);
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: const Text("Intelli-Chat"),
+            ),
+            body: const ChatViewBody(),
+            backgroundColor: Colors.transparent,
+            drawer: const Drawer(
+              child: DrawerBody(),
+            ),
           ),
         ),
       ),

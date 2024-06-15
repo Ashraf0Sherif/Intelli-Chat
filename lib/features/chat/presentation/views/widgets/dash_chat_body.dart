@@ -20,7 +20,12 @@ import '../../../../auth/presentation/logic/login_cubit/login_cubit.dart';
 import '../../logic/chat_cubit/chat_cubit.dart';
 
 class DashChatBody extends StatefulWidget {
-  const DashChatBody({super.key});
+  const DashChatBody({
+    super.key,
+    required this.currentTopicID,
+  });
+
+  final String currentTopicID;
 
   @override
   State<DashChatBody> createState() => _DashChatBodyState();
@@ -47,17 +52,12 @@ class _DashChatBodyState extends State<DashChatBody> {
       behavior: MyBehavior(),
       child: BlocConsumer<ChatCubit, ChatState>(
         builder: (context, state) {
-          int currentIndex =
-              BlocProvider.of<ChatCubit>(context).currentTopicIndex;
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection(kUserCollection)
                 .doc(FirebaseAuth.instance.currentUser!.uid)
                 .collection(kTopicsCollection)
-                .doc(BlocProvider.of<LoginCubit>(context)
-                    .user!
-                    .topics![currentIndex]
-                    .id)
+                .doc(widget.currentTopicID)
                 .collection(kMessagesCollection)
                 .orderBy('createdAt', descending: true)
                 .snapshots(),
@@ -102,7 +102,6 @@ class _DashChatBodyState extends State<DashChatBody> {
                         showDateSeparator: false,
                       ),
                       messageOptions: MessageOptions(
-
                         onLongPressMessage: (chatMessage) {
                           Clipboard.setData(
                               ClipboardData(text: chatMessage.text));
@@ -154,10 +153,7 @@ class _DashChatBodyState extends State<DashChatBody> {
                             .networkConnection) {
                           getChatResponse(
                             chatMessage: chatMessage,
-                            topicID: BlocProvider.of<LoginCubit>(context)
-                                .user!
-                                .topics![currentIndex]
-                                .id!,
+                            topicID: widget.currentTopicID,
                           );
                         } else {
                           showSnackBar(context, message: kNoInternetMessage);
