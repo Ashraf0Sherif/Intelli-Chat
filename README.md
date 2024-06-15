@@ -2,7 +2,7 @@
 
 Intelli-Chat is an advanced Flutter application designed to streamline communication and collaboration with integrated login options, a conversational Gemini chat bot, and Firebase integration for efficient topic and message management.
 
-![Intelli-Chat Demo](![Uploading Screenshot_٢٠٢٤٠٦١٥-١٧٥٨٤٧.png…]())
+![Screenshot_٢٠٢٤٠٦١٥-١٧٥٨٤٧](https://github.com/Ashraf0Sherif/Intelli-Chat/assets/129702213/501f90ec-79d4-4cef-80f8-229bff4839dd)
 
 ## Table of Contents
 
