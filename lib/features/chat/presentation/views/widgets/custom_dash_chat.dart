@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intellichat/core/utils/widgets/show_snack_bar.dart';
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
+import 'package:intellichat/features/chat/presentation/logic/chat_cubit/chat_cubit.dart';
 
 import '../../../../../constants.dart';
 import 'dash_chat_body.dart';
@@ -12,18 +13,21 @@ class CustomDashChat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginCubit, LoginState>(
+    return BlocConsumer<LoginCubit, LoginState>(
       builder: (context, state) {
         if (state is LoginFetchUserSuccess) {
+          BlocProvider.of<ChatCubit>(context).currentTopicIndex = 0;
           return const DashChatBody();
-        } else if (state is LoginFetchUserFailure) {
-          showSnackBar(context, message: state.errorMessage);
-        } else if (state is LoginFetchUserLoading) {
+        } else {
           return const SpinKitCubeGrid(
             color: kSecondaryColor2,
           );
         }
-        return const SizedBox();
+      },
+      listener: (BuildContext context, LoginState state) {
+        if (state is LoginFetchUserFailure) {
+          showSnackBar(context, message: state.errorMessage);
+        }
       },
     );
   }

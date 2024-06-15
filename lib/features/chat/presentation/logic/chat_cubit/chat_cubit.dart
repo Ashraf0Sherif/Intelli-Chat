@@ -81,14 +81,14 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> generateResponse(
       {required User firebaseUser,
       required String topicID,
-      required ChatMessage message,
+      required ChatMessage chatMessage,
       required ChatUser geminiChatBot,
       required List<Content> chatHistory}) async {
     emit(ChatGeminiLoading());
     var response = await chatRepoImplementation.textGeneration(
         firebaseUser: firebaseUser,
         topicID: topicID,
-        prompt: message.text,
+        message: chatMessage,
         geminiChatBot: geminiChatBot,
         chatHistory: chatHistory);
     response.when(

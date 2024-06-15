@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../constants.dart';
 import '../../../../../core/utils/widgets/show_snack_bar.dart';
 import '../../../../auth/presentation/logic/login_cubit/login_cubit.dart';
-import '../../data/models/topic_model/topic.dart';
+import '../../../data/models/topic_model/topic.dart';
 import '../../logic/chat_cubit/chat_cubit.dart';
 import 'custom_rename_dialog.dart';
 

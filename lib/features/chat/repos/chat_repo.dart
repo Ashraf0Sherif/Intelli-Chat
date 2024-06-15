@@ -8,7 +8,7 @@ abstract class ChatRepo {
   Future<FirebaseResult<void>> textGeneration(
       {required User firebaseUser,
       required String topicID,
-      required String prompt,
+      required ChatMessage message,
       required ChatUser geminiChatBot,required List<Content> chatHistory});
 
   Future<FirebaseResult<void>> createTopic(

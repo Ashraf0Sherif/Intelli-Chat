@@ -1,5 +1,3 @@
-
-
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -75,19 +73,23 @@ class ChatRepoImplementation implements ChatRepo {
   Future<FirebaseResult<void>> textGeneration(
       {required User firebaseUser,
       required String topicID,
-      required String prompt,
+      required ChatMessage message,
       required ChatUser geminiChatBot,
       required List<Content> chatHistory}) async {
     try {
       final response = await customGemini.textGeneration(
           firebaseUser: firebaseUser,
           topicID: topicID,
-          prompt: prompt,
+          chatMessage: message,
           chatHistory: chatHistory);
-      ChatMessage chatMessage = ChatMessage(
-          user: geminiChatBot, createdAt: DateTime.now(), text: response ?? '');
+      ChatMessage geminiChatMessageResponse = message;
+      geminiChatMessageResponse.text = response ?? '';
+      geminiChatMessageResponse.user = geminiChatBot;
+      geminiChatMessageResponse.createdAt = DateTime.now();
       await sendMessage(
-          firebaseUser: firebaseUser, topicID: topicID, message: chatMessage);
+          firebaseUser: firebaseUser,
+          topicID: topicID,
+          message: geminiChatMessageResponse);
       return const FirebaseResult.success(null);
     } catch (error) {
       return FirebaseResult.failure(

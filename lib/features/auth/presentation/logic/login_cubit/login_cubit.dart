@@ -2,12 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intellichat/features/auth/models/user_model/user.dart'
+import 'package:intellichat/features/auth/data/models/user_model/user.dart'
     as UserModel;
 import 'package:meta/meta.dart';
 
 import '../../../../../core/firebase/firebase_exceptions.dart';
-import '../../../../chat/presentation/data/models/topic_model/topic.dart';
+import '../../../../chat/data/models/topic_model/topic.dart';
 import '../../../repos/auth_repo_implementation.dart';
 
 part 'login_state.dart';
@@ -113,14 +113,21 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   void searchTopic(String searchText) {
-    if (searchText.isEmpty) {
-      user!.topics = userTopics;
+    if (user != null) {
+      if (searchText.isEmpty) {
+        user!.topics = userTopics;
+      } else {
+        user!.topics = user!.topics!
+            .where((element) => element.title!
+                .toLowerCase()
+                .startsWith(searchText.toLowerCase()))
+            .toList();
+      }
+      emit(LoginFetchUserSuccess());
     } else {
-      user!.topics = user!.topics!
-          .where((element) =>
-              element.title!.toLowerCase().startsWith(searchText.toLowerCase()))
-          .toList();
+      emit(
+        LoginFetchUserFailure(errorMessage: 'Check your internet'),
+      );
     }
-    emit(LoginFetchUserSuccess());
   }
 }

@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:intellichat/core/media/media_seervice.dart';
 import 'package:intellichat/core/utils/assets_data.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/welcome_widget.dart';
 
@@ -33,8 +37,9 @@ class _DashChatBodyState extends State<DashChatBody> {
   );
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _messageController = TextEditingController();
-  String lastCurrentUserMessage = '';
-  List<ChatUser> typingUsers = [];
+  final List<ChatUser> _typingUsers = [];
+  final MediaService _mediaService = MediaService();
+  File? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +64,23 @@ class _DashChatBodyState extends State<DashChatBody> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 _messages.clear();
-                for (var doc in snapshot.data!.docs) {
+                for (QueryDocumentSnapshot doc in snapshot.data!.docs) {
                   Timestamp timestamp = doc['createdAt'] as Timestamp;
                   DateTime dateTime = timestamp.toDate();
+                  List<ChatMedia>? medias = [];
+                  var x = doc.data() as Map<String, dynamic>;
+                  if (x.containsKey('imageURL')) {
+                    var imageURL = doc['imageURL'];
+                    if (imageURL != null) {
+                      medias.add(
+                        ChatMedia(
+                          url: imageURL,
+                          fileName: '',
+                          type: MediaType.image,
+                        ),
+                      );
+                    }
+                  }
                   _messages.add(
                     ChatMessage(
                       user: doc['userID'] ==
@@ -70,6 +89,7 @@ class _DashChatBodyState extends State<DashChatBody> {
                           : _geminiChatBot,
                       createdAt: dateTime,
                       text: doc['message'],
+                      medias: medias,
                     ),
                   );
                 }
@@ -77,17 +97,27 @@ class _DashChatBodyState extends State<DashChatBody> {
                   children: [
                     if (_messages.isEmpty) const WelcomeWidget(),
                     DashChat(
-                      typingUsers: typingUsers,
+                      typingUsers: _typingUsers,
                       messageListOptions: const MessageListOptions(
                         showDateSeparator: false,
                       ),
-                      messageOptions: const MessageOptions(
+                      messageOptions: MessageOptions(
+
+                        onLongPressMessage: (chatMessage) {
+                          Clipboard.setData(
+                              ClipboardData(text: chatMessage.text));
+                          showSnackBar(context,
+                              message: 'Message copied to clipboard',
+                              backgroundColor: Colors.green.shade400);
+                        },
                         containerColor: kSecondaryColor,
                         textColor: Colors.white,
                         currentUserTextColor: Colors.white,
                         currentUserContainerColor: kSecondaryColor2,
                       ),
                       inputOptions: InputOptions(
+                        trailing: [_mediaMessageButton()],
+                        alwaysShowSend: true,
                         sendButtonBuilder: (onSend) {
                           return Padding(
                             padding: const EdgeInsets.only(left: 8.0),
@@ -151,11 +181,59 @@ class _DashChatBodyState extends State<DashChatBody> {
             setState(() {});
           }
           if (state is ChatGeminiLoading) {
-            typingUsers.add(_geminiChatBot);
+            _typingUsers.add(_geminiChatBot);
           } else {
-            typingUsers.clear();
+            _typingUsers.clear();
           }
         },
+      ),
+    );
+  }
+
+  Widget _mediaMessageButton() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: InkWell(
+        onTap: () async {
+          _image = await _mediaService.getImageFromGallery();
+          setState(() {});
+        },
+        child: _image == null
+            ? Container(
+                padding: const EdgeInsets.all(12),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: kSecondaryColor,
+                ),
+                child: const Icon(
+                  FontAwesomeIcons.image,
+                  color: kSecondaryColor2,
+                ),
+              )
+            : Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(22),
+                    child: Image.file(
+                      _image!,
+                      width: 30,
+                    ),
+                  ),
+                  Positioned(
+                    left: 8,
+                    child: InkWell(
+                        onTap: () {
+                          _image = null;
+                          setState(() {});
+                        },
+                        child: const Icon(
+                          Icons.cancel,
+                          color: Colors.red,
+                          size: 22,
+                        )),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -169,6 +247,21 @@ class _DashChatBodyState extends State<DashChatBody> {
 
   void getChatResponse(
       {required ChatMessage chatMessage, required String topicID}) async {
+    if (_image != null) {
+      String path = _image!.path;
+      List<String> pathSegments = path.split('/');
+      chatMessage.medias = [
+        ChatMedia(
+            url: _image!.path,
+            fileName: pathSegments.last,
+            type: MediaType.image)
+      ];
+      setState(
+        () {
+          _image = null;
+        },
+      );
+    }
     await BlocProvider.of<ChatCubit>(context).sendMessage(
         firebaseUser: FirebaseAuth.instance.currentUser!,
         topicID: topicID,
@@ -184,7 +277,7 @@ class _DashChatBodyState extends State<DashChatBody> {
     await BlocProvider.of<ChatCubit>(context).generateResponse(
         firebaseUser: FirebaseAuth.instance.currentUser!,
         topicID: topicID,
-        message: chatMessage,
+        chatMessage: chatMessage,
         geminiChatBot: _geminiChatBot,
         chatHistory: chatHistory);
   }

@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intellichat/constants.dart';
-import 'package:intellichat/features/auth/models/user_model/user.dart'
+import 'package:intellichat/features/auth/data/models/user_model/user.dart'
     as UserModel;
 
-import '../../features/chat/presentation/data/models/topic_model/topic.dart';
+import '../../features/chat/data/models/topic_model/topic.dart';
 
 class CustomFirebase {
   Future<UserCredential> loginUsingEmailAndPassword({
@@ -74,10 +77,12 @@ class CustomFirebase {
     List<Topic> topics = await getTopicsWithMessages(firebaseUser);
     Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
     UserModel.User user = UserModel.User(
-        id: firebaseUser.uid,
-        displayName: userData?['displayName'] ?? 'Anonymous',
-        email: userData?['email'] ?? '',
-        topics: topics);
+      id: firebaseUser.uid,
+      displayName: userData?['displayName'] ?? 'Anonymous',
+      email: userData?['email'] ?? '',
+      topics: topics,
+      avatarUrl: userData?['avatarUrl'],
+    );
     return user;
   }
 
@@ -107,7 +112,6 @@ class CustomFirebase {
     topics.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
     return topics;
   }
-
 
   Future<void> createTopic(
       {required User firebaseUser, required String title}) async {
@@ -151,17 +155,30 @@ class CustomFirebase {
 
   Future<void> sendMessage(
       User firebaseUser, String topicID, ChatMessage message) async {
+    String? imageURL;
+    if (message.medias != null && message.medias!.isNotEmpty) {
+      Reference storageRef = FirebaseStorage.instance.ref().child(
+          'users/${firebaseUser.uid}/topics/$topicID/${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      UploadTask uploadTask =
+          storageRef.putFile(File(message.medias!.first.url));
+      TaskSnapshot taskSnapshot = await uploadTask;
+      imageURL = await taskSnapshot.ref.getDownloadURL();
+    }
     await FirebaseFirestore.instance
         .collection(kUserCollection)
         .doc(firebaseUser.uid)
         .collection(kTopicsCollection)
         .doc(topicID)
         .collection(kMessagesCollection)
-        .add({
-      'message': message.text,
-      'createdAt': message.createdAt,
-      'userID': message.user.id
-    });
+        .add(
+      {
+        'message': message.text,
+        'createdAt': message.createdAt,
+        'userID': message.user.id,
+        'imageURL': imageURL
+      },
+    );
   }
 
   Future<void> addFirstTopic(User firebaseUser) async {
@@ -182,6 +199,21 @@ class CustomFirebase {
         },
       );
     }
+  }
+
+  Future<String> changeUserAvatar(
+      {required User firebaseUser, required File image}) async {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('user_avatars/${firebaseUser.uid}.jpg');
+    final uploadTask = storageRef.putFile(image);
+    final snapshot = await uploadTask.whenComplete(() {});
+    final downloadUrl = await snapshot.ref.getDownloadURL();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .update({'avatarUrl': downloadUrl});
+    return downloadUrl;
   }
 
   Future<void> resetPassword({required String email}) async {

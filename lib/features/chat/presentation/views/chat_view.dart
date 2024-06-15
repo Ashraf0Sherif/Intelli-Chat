@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
+import 'package:intellichat/features/chat/presentation/logic/avatar_cubit/avatar_cubit.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/chat_view_body.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/drawer_body.dart';
 
 import '../../../../constants.dart';
+import '../../../../core/utils/widgets/show_snack_bar.dart';
 
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
@@ -33,18 +35,29 @@ class _ChatViewState extends State<ChatView> {
           end: Alignment.topCenter,
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        drawer: const Drawer(
-          child: DrawerBody(),
-        ),
-        appBar: AppBar(
-          centerTitle: true,
+      child: BlocListener<AvatarCubit, AvatarState>(
+        listener: (context, state) {
+          if (state is AvatarChangeSuccess) {
+            showSnackBar(context,
+                message: 'Avatar has changed successfully !',
+                backgroundColor: Colors.green.shade400);
+          } else if (state is AvatarChangeFailure) {
+            showSnackBar(context, message: state.errorMessage);
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text("Intelli-Chat"),
+          ),
+          body: const ChatViewBody(),
           backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: const Text("Intelli-Chat"),
+          drawer: const Drawer(
+            child: DrawerBody(),
+          ),
         ),
-        body: const ChatViewBody(),
       ),
     );
   }

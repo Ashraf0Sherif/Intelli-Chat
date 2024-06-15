@@ -8,8 +8,6 @@ class LoginInitial extends LoginState {}
 class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {}
-
-
 class LoginFetchUserLoading extends LoginState {}
 
 class LoginFetchUserFailure extends LoginState {

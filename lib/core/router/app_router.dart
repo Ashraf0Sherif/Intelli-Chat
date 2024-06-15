@@ -6,7 +6,6 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart'
 import 'package:intellichat/features/auth/presentation/logic/register_cubit/register_cubit.dart';
 import 'package:intellichat/features/auth/repos/auth_repo_implementation.dart';
 import 'package:intellichat/features/chat/presentation/views/chat_view.dart';
-import 'package:intellichat/features/onboarding/presentation/views/onboarding.dart';
 
 import '../../features/auth/presentation/views/login_view.dart';
 import '../../features/auth/presentation/views/register_view.dart';
@@ -16,7 +15,6 @@ abstract class AppRouter {
   static const kChatView = "/chatView";
   static const kLoginView = "/LoginView";
   static const kRegisterView = "/registerView";
-  static const kOnboarding = "/onboarding";
 
   static final Map<String, Widget> _views = {
     kChatView: const ChatView(),
@@ -25,7 +23,6 @@ abstract class AppRouter {
       create: (context) => RegisterCubit(getIt.get<AuthRepoImplementation>()),
       child: const RegisterView(),
     ),
-    kOnboarding: const OnBoarding(),
   };
 
   static void pushNavigation(
