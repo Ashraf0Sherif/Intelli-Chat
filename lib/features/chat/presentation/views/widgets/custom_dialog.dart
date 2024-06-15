@@ -43,7 +43,7 @@ class _CustomCreateAlertDialogState extends State<CustomCreateAlertDialog> {
         autovalidateMode: dialogAutovalidateMode,
         child: AlertDialog(
           backgroundColor: kPrimaryColor,
-          title: const Text('Enter topic title'),
+          title: const Text('Create new topic'),
           actions: [
             TextButton(
               onPressed: () {
@@ -80,7 +80,7 @@ class _CustomCreateAlertDialogState extends State<CustomCreateAlertDialog> {
                   color: kSecondaryColor,
                 ),
               ),
-              hintText: "title",
+              hintText: "Topic title",
             ),
           ),
         ),
