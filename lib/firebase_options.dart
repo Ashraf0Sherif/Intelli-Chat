@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -62,20 +59,35 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD2wse9IZRoAJAJd17D8-M-sBsvTN2Lgio',
+    apiKey: 'AIzaSyAYTLDgu_oEPEAg8TOfN9UTpmqh-Bvy43s',
     appId: '1:22984193017:ios:388152683c84c146d28328',
     messagingSenderId: '22984193017',
     projectId: 'intelli-chat-ce521',
     storageBucket: 'intelli-chat-ce521.appspot.com',
+    androidClientId: '22984193017-buecp2emi3ne41i88kagq14d52ajfj3k.apps.googleusercontent.com',
+    iosClientId: '22984193017-f35ng97jujqnctbb3ulcg7oj1aask05c.apps.googleusercontent.com',
     iosBundleId: 'com.example.intellichat',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD2wse9IZRoAJAJd17D8-M-sBsvTN2Lgio',
-    appId: '1:22984193017:ios:93b33a483ba5e808d28328',
+    apiKey: 'AIzaSyAYTLDgu_oEPEAg8TOfN9UTpmqh-Bvy43s',
+    appId: '1:22984193017:ios:388152683c84c146d28328',
     messagingSenderId: '22984193017',
     projectId: 'intelli-chat-ce521',
     storageBucket: 'intelli-chat-ce521.appspot.com',
-    iosBundleId: 'com.example.intellichat.RunnerTests',
+    androidClientId: '22984193017-buecp2emi3ne41i88kagq14d52ajfj3k.apps.googleusercontent.com',
+    iosClientId: '22984193017-f35ng97jujqnctbb3ulcg7oj1aask05c.apps.googleusercontent.com',
+    iosBundleId: 'com.example.intellichat',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyAqfgyvUVZ1v0b-lmQttO70HZEVQNpb-K0',
+    appId: '1:22984193017:web:2fb93174b5d0c5cad28328',
+    messagingSenderId: '22984193017',
+    projectId: 'intelli-chat-ce521',
+    authDomain: 'intelli-chat-ce521.firebaseapp.com',
+    storageBucket: 'intelli-chat-ce521.appspot.com',
+    measurementId: 'G-TE8XS73P76',
+  );
+
 }

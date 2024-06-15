@@ -12,7 +12,20 @@
           "package_name": "com.example.intellichat"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "22984193017-k1hdcihqk6ijrofo4qpmd6npm0nc8qjo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.intellichat",
+            "certificate_hash": "3d7ea0980b7b6bd5bf3739d06e99addee9b036f7"
+          }
+        },
+        {
+          "client_id": "22984193017-g7c44dhve2m59pm6qiadidoru4osebjq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCQT2tpQ4j8Ge9hA-7HrCXzSJaLLL_zKHo"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "22984193017-g7c44dhve2m59pm6qiadidoru4osebjq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "22984193017-f35ng97jujqnctbb3ulcg7oj1aask05c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.intellichat"
+              }
+            }
+          ]
         }
       }
     }

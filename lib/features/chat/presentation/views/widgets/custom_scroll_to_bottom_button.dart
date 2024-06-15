@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intellichat/constants.dart';
 class CustomScrollToBottomButton extends StatelessWidget {
   const CustomScrollToBottomButton({
@@ -29,8 +28,9 @@ class CustomScrollToBottomButton extends StatelessWidget {
                 },
                 backgroundColor: kSecondaryColor,
                 child: const Icon(
-                  FontAwesomeIcons.circleArrowDown,
+                  Icons.arrow_downward_outlined,
                   color: Colors.white,
+                  size: 18,
                 ),
               ),
             ),

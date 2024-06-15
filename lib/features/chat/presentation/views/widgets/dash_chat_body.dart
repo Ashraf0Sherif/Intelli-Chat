@@ -11,6 +11,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:intellichat/core/media/media_seervice.dart';
 import 'package:intellichat/core/utils/assets_data.dart';
+import 'package:intellichat/features/chat/presentation/views/widgets/custom_scroll_to_bottom_button.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/welcome_widget.dart';
 
 import '../../../../../constants.dart';
@@ -33,8 +34,9 @@ class DashChatBody extends StatefulWidget {
 
 class _DashChatBodyState extends State<DashChatBody> {
   final ChatUser _currernUser = ChatUser(
-      id: FirebaseAuth.instance.currentUser!.uid,
-      firstName: FirebaseAuth.instance.currentUser!.displayName);
+    id: FirebaseAuth.instance.currentUser!.uid,
+    firstName: FirebaseAuth.instance.currentUser!.displayName,
+  );
   final ChatUser _geminiChatBot = ChatUser(
     id: '2',
     firstName: 'IntelliChat',
@@ -48,6 +50,10 @@ class _DashChatBodyState extends State<DashChatBody> {
 
   @override
   Widget build(BuildContext context) {
+    // if (BlocProvider.of<LoginCubit>(context).user!.avatarUrl != null) {
+    //   _currernUser.profileImage =
+    //       BlocProvider.of<LoginCubit>(context).user!.avatarUrl;
+    // }
     return ScrollConfiguration(
       behavior: MyBehavior(),
       child: BlocConsumer<ChatCubit, ChatState>(
@@ -97,11 +103,31 @@ class _DashChatBodyState extends State<DashChatBody> {
                   children: [
                     if (_messages.isEmpty) const WelcomeWidget(),
                     DashChat(
+                      scrollToBottomOptions: ScrollToBottomOptions(
+                        scrollToBottomBuilder: (scrollController) {
+                          return CustomScrollToBottomButton(
+                              scrollController: scrollController);
+                        },
+                      ),
                       typingUsers: _typingUsers,
                       messageListOptions: const MessageListOptions(
                         showDateSeparator: false,
                       ),
                       messageOptions: MessageOptions(
+                        messageMediaBuilder: (ChatMessage message,
+                            ChatMessage? previousMessage,
+                            ChatMessage? nextMessage) {
+                          return SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(message.medias!.first.url),
+                            ),
+                          );
+                        },
+                        showTime: true,
+                        showOtherUsersName: true,
+                        //showCurrentUserAvatar: true,
                         onLongPressMessage: (chatMessage) {
                           Clipboard.setData(
                               ClipboardData(text: chatMessage.text));
