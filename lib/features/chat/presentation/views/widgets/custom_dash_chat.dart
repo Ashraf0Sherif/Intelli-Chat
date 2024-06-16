@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intellichat/core/utils/widgets/custom_spinkit.dart';
 import 'package:intellichat/core/utils/widgets/show_snack_bar.dart';
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
 
-import '../../../../../constants.dart';
 import 'dash_chat_body.dart';
 
 class CustomDashChat extends StatelessWidget {
@@ -20,9 +19,7 @@ class CustomDashChat extends StatelessWidget {
                 BlocProvider.of<LoginCubit>(context).currentTopicId!,
           );
         } else {
-          return const SpinKitCubeGrid(
-            color: kSecondaryColor2,
-          );
+          return const CustomSpinkKit();
         }
       },
       listener: (BuildContext context, LoginState state) {

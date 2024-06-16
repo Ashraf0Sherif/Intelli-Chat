@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,15 +11,18 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:intellichat/core/media/media_seervice.dart';
+import 'package:intellichat/core/router/app_router.dart';
 import 'package:intellichat/core/utils/assets_data.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/custom_scroll_to_bottom_button.dart';
 import 'package:intellichat/features/chat/presentation/views/widgets/welcome_widget.dart';
 
 import '../../../../../constants.dart';
+import '../../../../../core/utils/widgets/custom_spinkit.dart';
 import '../../../../../core/utils/widgets/my_behavior.dart';
 import '../../../../../core/utils/widgets/show_snack_bar.dart';
 import '../../../../auth/presentation/logic/login_cubit/login_cubit.dart';
 import '../../logic/chat_cubit/chat_cubit.dart';
+import 'custom_send_button_builder.dart';
 
 class DashChatBody extends StatefulWidget {
   const DashChatBody({
@@ -49,165 +53,159 @@ class _DashChatBodyState extends State<DashChatBody> {
   File? _image;
 
   @override
+  @override
   Widget build(BuildContext context) {
-    // if (BlocProvider.of<LoginCubit>(context).user!.avatarUrl != null) {
-    //   _currernUser.profileImage =
-    //       BlocProvider.of<LoginCubit>(context).user!.avatarUrl;
-    // }
-    return ScrollConfiguration(
-      behavior: MyBehavior(),
-      child: BlocConsumer<ChatCubit, ChatState>(
-        builder: (context, state) {
-          return StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection(kUserCollection)
-                .doc(FirebaseAuth.instance.currentUser!.uid)
-                .collection(kTopicsCollection)
-                .doc(widget.currentTopicID)
-                .collection(kMessagesCollection)
-                .orderBy('createdAt', descending: true)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                _messages.clear();
-                for (QueryDocumentSnapshot doc in snapshot.data!.docs) {
-                  Timestamp timestamp = doc['createdAt'] as Timestamp;
-                  DateTime dateTime = timestamp.toDate();
-                  List<ChatMedia>? medias = [];
-                  var x = doc.data() as Map<String, dynamic>;
-                  if (x.containsKey('imageURL')) {
-                    var imageURL = doc['imageURL'];
-                    if (imageURL != null) {
-                      medias.add(
-                        ChatMedia(
-                          url: imageURL,
-                          fileName: '',
-                          type: MediaType.image,
-                        ),
-                      );
+    return BlocListener<LoginCubit, LoginState>(
+      listener: (context, state) {
+        if (state is LoginLogoutSuccess) {
+          AppRouter.pushReplacementAll(view: AppRouter.kLoginView);
+        }
+      },
+      child: ScrollConfiguration(
+        behavior: MyBehavior(),
+        child: BlocConsumer<ChatCubit, ChatState>(
+          builder: (context, state) {
+            return StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection(kUserCollection)
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection(kTopicsCollection)
+                  .doc(widget.currentTopicID)
+                  .collection(kMessagesCollection)
+                  .orderBy('createdAt', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  _messages.clear();
+                  for (QueryDocumentSnapshot doc in snapshot.data!.docs) {
+                    Timestamp timestamp = doc['createdAt'] as Timestamp;
+                    DateTime dateTime = timestamp.toDate();
+                    List<ChatMedia>? medias = [];
+                    var x = doc.data() as Map<String, dynamic>;
+                    if (x.containsKey('imageURL')) {
+                      var imageURL = doc['imageURL'];
+                      if (imageURL != null) {
+                        medias.add(
+                          ChatMedia(
+                            url: imageURL,
+                            fileName: '',
+                            type: MediaType.image,
+                          ),
+                        );
+                      }
                     }
+                    _messages.add(
+                      ChatMessage(
+                        user: doc['userID'] ==
+                                FirebaseAuth.instance.currentUser!.uid
+                            ? _currernUser
+                            : _geminiChatBot,
+                        createdAt: dateTime,
+                        text: doc['message'],
+                        medias: medias,
+                      ),
+                    );
                   }
-                  _messages.add(
-                    ChatMessage(
-                      user: doc['userID'] ==
-                              FirebaseAuth.instance.currentUser!.uid
-                          ? _currernUser
-                          : _geminiChatBot,
-                      createdAt: dateTime,
-                      text: doc['message'],
-                      medias: medias,
-                    ),
-                  );
-                }
-                return Stack(
-                  children: [
-                    if (_messages.isEmpty) const WelcomeWidget(),
-                    DashChat(
-                      scrollToBottomOptions: ScrollToBottomOptions(
-                        scrollToBottomBuilder: (scrollController) {
-                          return CustomScrollToBottomButton(
-                              scrollController: scrollController);
-                        },
-                      ),
-                      typingUsers: _typingUsers,
-                      messageListOptions: const MessageListOptions(
-                        showDateSeparator: false,
-                      ),
-                      messageOptions: MessageOptions(
-                        messageMediaBuilder: (ChatMessage message,
-                            ChatMessage? previousMessage,
-                            ChatMessage? nextMessage) {
-                          return SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image.network(message.medias!.first.url),
-                            ),
-                          );
-                        },
-                        showTime: true,
-                        showOtherUsersName: true,
-                        //showCurrentUserAvatar: true,
-                        onLongPressMessage: (chatMessage) {
-                          Clipboard.setData(
-                              ClipboardData(text: chatMessage.text));
-                          showSnackBar(context,
-                              message: 'Message copied to clipboard',
-                              backgroundColor: Colors.green.shade400);
-                        },
-                        containerColor: kSecondaryColor,
-                        textColor: Colors.white,
-                        currentUserTextColor: Colors.white,
-                        currentUserContainerColor: kSecondaryColor2,
-                      ),
-                      inputOptions: InputOptions(
-                        trailing: [_mediaMessageButton()],
-                        alwaysShowSend: true,
-                        sendButtonBuilder: (onSend) {
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: InkWell(
-                              onTap: onSend,
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: kSecondaryColor,
-                                ),
-                                child: const Icon(
-                                  FontAwesomeIcons.paperPlane,
-                                  color: kSecondaryColor2,
+                  return Stack(
+                    children: [
+                      if (_messages.isEmpty) const WelcomeWidget(),
+                      DashChat(
+                        scrollToBottomOptions: ScrollToBottomOptions(
+                          scrollToBottomBuilder: (scrollController) {
+                            return CustomScrollToBottomButton(
+                                scrollController: scrollController);
+                          },
+                        ),
+                        typingUsers: _typingUsers,
+                        messageListOptions: const MessageListOptions(
+                          showDateSeparator: false,
+                        ),
+                        messageOptions: MessageOptions(
+                          messageMediaBuilder: (ChatMessage message,
+                              ChatMessage? previousMessage,
+                              ChatMessage? nextMessage) {
+                            return SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: CachedNetworkImage(
+                                  imageUrl: message.medias!.first.url,
+                                  placeholder: (context, text) {
+                                    return const SpinKitPulse(
+                                      color: kSecondaryColor2,
+                                    );
+                                  },
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                        textController: _messageController,
-                        inputDecoration: InputDecoration(
-                          filled: true,
-                          fillColor: kSecondaryColor.withOpacity(0.3),
-                          contentPadding: const EdgeInsets.all(15),
-                          enabledBorder: buildBorder(),
-                          focusedBorder: buildBorder(),
-                          border: buildBorder(),
-                          hintText: "Ask me anything",
+                            );
+                          },
+                          showTime: true,
+                          showOtherUsersName: true,
+                          onLongPressMessage: (chatMessage) {
+                            Clipboard.setData(
+                                ClipboardData(text: chatMessage.text));
+                            showSnackBar(context,
+                                message: 'Message copied to clipboard',
+                                backgroundColor: Colors.green.shade400);
+                          },
+                          containerColor: kSecondaryColor,
+                          textColor: Colors.white,
+                          currentUserTextColor: Colors.white,
+                          currentUserContainerColor: kSecondaryColor2,
                         ),
+                        inputOptions: InputOptions(
+                          trailing: [_mediaMessageButton()],
+                          alwaysShowSend: true,
+                          sendButtonBuilder: (onSend) {
+                            return SendButtonBuilder(
+                              onTap: onSend,
+                            );
+                          },
+                          textController: _messageController,
+                          inputDecoration: InputDecoration(
+                            filled: true,
+                            fillColor: kSecondaryColor.withOpacity(0.3),
+                            contentPadding: const EdgeInsets.all(15),
+                            enabledBorder: buildBorder(),
+                            focusedBorder: buildBorder(),
+                            border: buildBorder(),
+                            hintText: "Ask me anything",
+                          ),
+                        ),
+                        currentUser: _currernUser,
+                        onSend: (ChatMessage chatMessage) {
+                          if (BlocProvider.of<LoginCubit>(context)
+                              .networkConnection) {
+                            getChatResponse(
+                              chatMessage: chatMessage,
+                              topicID: widget.currentTopicID,
+                            );
+                          } else {
+                            showSnackBar(context, message: kNoInternetMessage);
+                          }
+                        },
+                        messages: _messages,
                       ),
-                      currentUser: _currernUser,
-                      onSend: (ChatMessage chatMessage) {
-                        if (BlocProvider.of<LoginCubit>(context)
-                            .networkConnection) {
-                          getChatResponse(
-                            chatMessage: chatMessage,
-                            topicID: widget.currentTopicID,
-                          );
-                        } else {
-                          showSnackBar(context, message: kNoInternetMessage);
-                        }
-                      },
-                      messages: _messages,
-                    ),
-                  ],
-                );
-              } else {
-                return const SpinKitCubeGrid(
-                  color: kSecondaryColor,
-                );
-              }
-            },
-          );
-        },
-        listener: (BuildContext context, ChatState state) {
-          if (state is ChatNewChatSuccess ||
-              state is ChatFetchMessagesSuccess) {
-            setState(() {});
-          }
-          if (state is ChatGeminiLoading) {
-            _typingUsers.add(_geminiChatBot);
-          } else {
-            _typingUsers.clear();
-          }
-        },
+                    ],
+                  );
+                } else {
+                  return const CustomSpinkKit();
+                }
+              },
+            );
+          },
+          listener: (BuildContext context, ChatState state) {
+            if (state is ChatNewChatSuccess ||
+                state is ChatFetchMessagesSuccess) {
+              setState(() {});
+            }
+            if (state is ChatGeminiLoading) {
+              _typingUsers.add(_geminiChatBot);
+            } else {
+              _typingUsers.clear();
+            }
+          },
+        ),
       ),
     );
   }

@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart'
-    as get_transitions;
-import 'package:intellichat/core/router/app_router.dart';
 import 'package:intellichat/core/utils/styles.dart';
+import 'package:intellichat/core/utils/widgets/custom_spinkit.dart';
 import 'package:intellichat/core/utils/widgets/show_snack_bar.dart';
 import 'package:intellichat/features/auth/presentation/logic/login_cubit/login_cubit.dart';
 import 'package:intellichat/features/chat/presentation/logic/avatar_cubit/avatar_cubit.dart';
@@ -83,11 +81,6 @@ class _DrawerBodyState extends State<DrawerBody> {
                             if (BlocProvider.of<LoginCubit>(context)
                                 .networkConnection) {
                               BlocProvider.of<LoginCubit>(context).signOut();
-                              AppRouter.pushReplacementAll(
-                                  view: AppRouter.kLoginView,
-                                  milliseconds: 1200,
-                                  transition:
-                                      get_transitions.Transition.fadeIn);
                             } else {
                               Navigator.of(context).pop();
                               showSnackBar(context,
@@ -108,11 +101,7 @@ class _DrawerBodyState extends State<DrawerBody> {
                   ],
                 );
               } else {
-                return const Center(
-                  child: SpinKitCubeGrid(
-                    color: kSecondaryColor2,
-                  ),
-                );
+                return const CustomSpinkKit();
               }
             },
           ),
@@ -133,8 +122,10 @@ class CustomUserAvatar extends StatefulWidget {
 
 class _CustomUserAvatarState extends State<CustomUserAvatar> {
   void _changeUserAvatar() {
-    BlocProvider.of<AvatarCubit>(context)
-        .changeUserAvatar(firebaseUser: FirebaseAuth.instance.currentUser!);
+    BlocProvider.of<AvatarCubit>(context).changeUserAvatar(
+        firebaseUser: FirebaseAuth.instance.currentUser!,
+        isConnectedToInternet:
+            BlocProvider.of<LoginCubit>(context).networkConnection);
   }
 
   @override
@@ -146,11 +137,9 @@ class _CustomUserAvatarState extends State<CustomUserAvatar> {
               state.avatarUrl;
         }
         if (state is AvatarChangeLoading) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: kPrimaryColor,
-              strokeWidth: 2,
-            ),
+          return const SpinKitPulse(
+            color: kSecondaryColor2,
+            size: 30,
           );
         }
         if (BlocProvider.of<LoginCubit>(context).user!.avatarUrl == null) {
@@ -170,11 +159,8 @@ class _CustomUserAvatarState extends State<CustomUserAvatar> {
               child: CachedNetworkImage(
                 width: 30,
                 placeholder: (context, text) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: kPrimaryColor,
-                      strokeWidth: 2,
-                    ),
+                  return const SpinKitPulse(
+                    color: kSecondaryColor2,
                   );
                 },
                 imageUrl: BlocProvider.of<LoginCubit>(context).user!.avatarUrl!,

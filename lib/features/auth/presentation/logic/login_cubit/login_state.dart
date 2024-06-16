@@ -8,7 +8,9 @@ class LoginInitial extends LoginState {}
 class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {}
+
 class LoginChangeTopicID extends LoginState {}
+
 class LoginFetchUserLoading extends LoginState {}
 
 class LoginFetchUserFailure extends LoginState {
@@ -38,3 +40,5 @@ class LoginResetPasswordFailure extends LoginState {
 class LoginLogoutLoading extends LoginState {}
 
 class LoginLogoutFailure extends LoginState {}
+
+class LoginLogoutSuccess extends LoginState {}

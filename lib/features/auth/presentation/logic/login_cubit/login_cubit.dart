@@ -85,7 +85,7 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       await FirebaseAuth.instance.signOut();
       await GoogleSignIn().signOut();
-      emit(LoginInitial());
+      emit(LoginLogoutSuccess());
     } catch (error) {
       emit(LoginLogoutFailure());
     }

@@ -25,6 +25,7 @@ class _SuccessDrawerListViewState extends State<SuccessDrawerListView> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
+          const SizedBox(height: 15),
           CustomTextFormField(
             label: 'Search chat history',
             onChanged: (text) {
