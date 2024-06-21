@@ -46,8 +46,14 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
           actions: [
             ElevatedButton(
               style: ButtonStyle(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                      side: const BorderSide(color: kSecondaryColor),
+                    ),
+                  ),
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(kPrimaryColor)),
+                      WidgetStateProperty.all<Color>(kPrimaryColor)),
               onPressed: () {
                 if (_dialogFormKey.currentState!.validate()) {
                   BlocProvider.of<LoginCubit>(context)
@@ -58,7 +64,10 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                   setState(() {});
                 }
               },
-              child: const Text("Reset password"),
+              child: const Text(
+                "Reset password",
+                style: TextStyle(color: Colors.grey),
+              ),
             )
           ],
         ),

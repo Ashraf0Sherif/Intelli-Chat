@@ -143,6 +143,7 @@ class _RegisterViewBodyState extends State<RegisterViewBody> {
                     ),
                     const Divider(
                       thickness: 1,
+                      color: Colors.grey,
                     ),
                     const SizedBox(
                       height: 10,

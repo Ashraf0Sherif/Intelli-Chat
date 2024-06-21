@@ -114,7 +114,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                                 },
                               );
                             },
-                            child: const Text("Reset Password")),
+                            child: const Text("Reset Password",style: TextStyle(color: Colors.grey),)),
                       ],
                     ),
                     const SizedBox(
